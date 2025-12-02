@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MegaBonk Dev Roadmap</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #0d0d0d;
+      color: #eee;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #ffcc33;
+    }
+    details {
+      background: #1a1a1a;
+      margin: 8px 0;
+      padding: 10px 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(255,255,255,0.05);
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #ffd966;
+    }
+    ul {
+      list-style: none;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    input[type="checkbox"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+    }
+    .category {
+      margin-bottom: 20px;
+    }
+    .note {
+      font-size: 0.9em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 MegaBonk 2D Dev Roadmap</h1>
+  <p class="note">Organized development plan for the new version of the project using Pygame. Click on each section to expand/collapse tasks.</p>
+
+  <!-- PHASE 1 -->
+  <div class="category">
+    <h2>🧩 Core Optimization &amp;amp; Settings</h2>
+    <details open>
+      <summary>Game Settings &amp; Debug Tools</summary>
+      <ul>
+        <li><input type="checkbox">Fix scaling for settings menu (responsive to any resolution)</li>
+        <li><input type="checkbox">Add fullscreen toggle (F11 or settings button)</li>
+        <li><input type="checkbox">Separate and fix music/SFX volume controls</li>
+        <li><input type="checkbox">Save settings (JSON)- encrypt it with Base64</li>
+        <li><input type="checkbox">Add toggle button/key to show hitboxes (debug mode)</li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="category">
+    <h2>🗺️ Map Generation &amp; Exploration</h2>
+    <details>
+      <summary>Procedural &amp; Interactive Map</summary>
+      <ul>
+        <li><input type="checkbox">Create semi-random tile-based map generator (zones/rooms)</li>
+        <li><input type="checkbox">Add collision layer for walls and map borders</li>
+        <li><input type="checkbox">Auto-connect zones logically (paths, doors)</li>
+        <li><input type="checkbox">Smooth texture transitions (autotiling)</li>
+        <li><input type="checkbox">Add special structure for boss summoning</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Minimap</summary>
+      <ul>
+        <li><input type="checkbox">Display player location</li>
+        <li><input type="checkbox">Show discovered map areas</li>
+        <li><input type="checkbox">Render enemies as red dots</li>
+        <li><input type="checkbox">Render XP as small blue dots</li>
+        <li><input type="checkbox">Show boss structures or portals</li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="category">
+    <h2>⚔️ Combat &amp; Enemy System</h2>
+    <details>
+      <summary>Enemies</summary>
+      <ul>
+        <li><input type="checkbox">Rework spawning: timer-based waves instead of player level</li>
+        <li><input type="checkbox">Add elite enemies (bigger, stronger, same sprite, colored tint)</li>
+        <li><input type="checkbox">Elite enemies drop chests with random items</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Boss System</summary>
+      <ul>
+        <li><input type="checkbox">Boss structures that summon bosses when interacted with</li>
+        <li><input type="checkbox">Cinematic intro: player auto-moves to position, enemies freeze</li>
+        <li><input type="checkbox">Boss dialogue (before fight only)</li>
+        <li><input type="checkbox">Unlock portal after first boss → leads to Floor 2</li>
+        <li><input type="checkbox">New boss and environment on each floor</li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="category">
+    <h2>🏪 NPCs, Items &amp; Progression</h2>
+    <details>
+      <summary>NPCs &amp; Shops</summary>
+      <ul>
+        <li><input type="checkbox">Add passive NPC at start of run to choose a starting item</li>
+        <li><input type="checkbox">Add a store to buy new characters</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Characters &amp; Skills</summary>
+      <ul>
+        <li><input type="checkbox">Implement multiple characters with unique attacks</li>
+        <li><input type="checkbox">Unlock new characters via skill tree or store</li>
+        <li><input type="checkbox">Add “Hability Tomes” that grant temporary or new abilities</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Progression Systems</summary>
+      <ul>
+        <li><input type="checkbox">Skill tree to unlock tomes, bonuses, and characters</li>
+        <li><input type="checkbox">Achievement page that tracks progress and unlocks nodes</li>
+        <li><input type="checkbox">Connect achievements and skill tree for progression</li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="category">
+    <h2>💅 Visual, Audio &amp; UX Polish</h2>
+    <details>
+      <summary>Presentation</summary>
+      <ul>
+        <li><input type="checkbox">Add particles, hit flashes, screen shake, and smoother animations</li>
+        <li><input type="checkbox">Enhance UI (HUD, cooldowns, XP bar)</li>
+        <li><input type="checkbox">Improve sound feedback and boss music transitions</li>
+      </ul>
+    </details>
+  </div>
+
+  <p class="note">Tip: open this HTML file in a browser, and tick boxes as you implement features. You can style or extend it later with JS for progress saving.</p>
+</body>
+</html>

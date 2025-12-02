@@ -1,0 +1,226 @@
+{
+    "master_volume": 100,
+    "music_volume": 0,
+    "effects_volume": 0,
+    "resolution": [
+        1280,
+        720
+    ],
+    "high_score": 25,
+    "skill_points": 0,
+    "skills": {
+        "max_health": {
+            "type": "stats",
+            "level": 0,
+            "max_level": 6,
+            "costs": [
+                1,
+                2,
+                3,
+                6,
+                8,
+                10
+            ],
+            "effect": "+20 HP per level"
+        },
+        "speed": {
+            "type": "stats",
+            "level": 0,
+            "max_level": 6,
+            "costs": [
+                1,
+                2,
+                3,
+                6,
+                7,
+                8
+            ],
+            "effect": "+5% Speed per level"
+        },
+        "heal": {
+            "type": "abilities",
+            "level": 0,
+            "max_level": 5,
+            "costs": [
+                5,
+                6,
+                7,
+                8,
+                9
+            ],
+            "effect": "+2 HP/sec per level",
+            "requires": [
+                [
+                    "max_health",
+                    3
+                ],
+                [
+                    "speed",
+                    3
+                ]
+            ]
+        },
+        "damage": {
+            "type": "stats",
+            "level": 0,
+            "max_level": 6,
+            "costs": [
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+            ],
+            "effect": "+10% Damage per level",
+            "requires": [
+                [
+                    "heal",
+                    2
+                ]
+            ]
+        },
+        "fire_rate": {
+            "type": "stats",
+            "level": 0,
+            "max_level": 6,
+            "costs": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "effect": "+10% Fire Rate per level",
+            "requires": [
+                [
+                    "damage",
+                    1
+                ]
+            ]
+        },
+        "crit_damage": {
+            "type": "stats",
+            "level": 0,
+            "max_level": 6,
+            "costs": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+            ],
+            "effect": "+30% Crit damage per level",
+            "requires": [
+                [
+                    "heal",
+                    2
+                ]
+            ]
+        },
+        "crit_chance": {
+            "type": "stats",
+            "level": 0,
+            "max_level": 6,
+            "costs": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+            ],
+            "effect": "+5% Crit Rate per level",
+            "requires": [
+                [
+                    "crit_damage",
+                    1
+                ]
+            ]
+        },
+        "shield": {
+            "type": "abilities",
+            "level": 0,
+            "max_level": 5,
+            "costs": [
+                3,
+                4,
+                5,
+                6,
+                7
+            ],
+            "effect": "-1s Cooldown per level",
+            "requires": [
+                [
+                    "crit_chance",
+                    3
+                ],
+                [
+                    "fire_rate",
+                    3
+                ]
+            ]
+        },
+        "burn_damage": {
+            "type": "abilities",
+            "level": 0,
+            "max_level": 5,
+            "costs": [
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "effect": "+0.5 Fire Damage per level",
+            "achievement_required": "beat_Pyraxis"
+        },
+        "burn_duration": {
+            "type": "abilities",
+            "level": 0,
+            "max_level": 5,
+            "costs": [
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "effect": "+1s Fire Duration per level",
+            "requires": [
+                [
+                    "burn_damage",
+                    3
+                ]
+            ],
+            "achievement_required": "beat_Pyraxis"
+        },
+        "invincibility": {
+            "type": "abilities",
+            "level": 0,
+            "max_level": 5,
+            "costs": [
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "effect": "+0.5s Invincibility per level",
+            "requires": [
+                [
+                    "burn_damage",
+                    1
+                ]
+            ],
+            "achievement_required": "beat_Arcanos"
+        }
+    },
+    "achievements": {
+        "beat_Pyraxis": false,
+        "beat_Arcanos": false,
+        "beat_Nyxblade": false
+    }
+}
