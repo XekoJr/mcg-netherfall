@@ -2,3 +2,8 @@ __pycache__
 abilities/__pycache__
 enemies/__pycache__
 ui/__pycache__
+managers/__pycache__
+characters/__pycache__
+save/
+*.backup
+utils.json

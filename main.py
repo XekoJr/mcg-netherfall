@@ -1,7 +1,8 @@
 import pygame
 import sys
 from assets import *
-from managers import EnemyManager, GameManager
+from ui.utils import show_loading_screen
+from managers import EnemyManager, GameManager, SaveManager
 from xp import xp_drops
 from ui import Menu
 from projectile import projectiles
@@ -10,12 +11,18 @@ from characters import Ranger, Gigachad
 pygame.init()
 pygame.mixer.init()
 initialize_fonts()
+pygame.display.set_caption("MCG Netherfall")
 
-# Set up the display
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Vampire Survivors Clone")
+# Initialize save manager and display
+save_manager = SaveManager(save_file="save/save.dat")
+screen = Menu.initialize_display(save_manager)
 
-# Initialize the menu with Fonts class attributes
+show_loading_screen(
+    screen,
+    image_path='./assets/images/background/background-production-loading.png',
+    duration=1.5
+)
+
 menu = Menu(screen, Fonts.title, Fonts.button, Fonts.credit, Fonts.score)
 
 # Globals for the current player and enemy manager
@@ -56,7 +63,7 @@ def reset_game(achievements=None, character_type="ranger"):
 
 game_manager = GameManager(screen, menu)
 
-# Then set callbacks
+# Set callbacks
 menu.reset_game = reset_game
 menu.game_loop = game_manager.run_game_loop
 

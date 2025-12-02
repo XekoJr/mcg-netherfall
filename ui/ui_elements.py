@@ -12,17 +12,18 @@ class Button:
         self.font = font
         self.action = action
         self.hovered = False
-        self.last_hover_state = False
+        self.was_hovered = False
         
     def update(self, mouse_pos):
         """Update button hover state."""
-        was_hovered = self.hovered
+        self.was_hovered = self.hovered
         self.hovered = self.rect.collidepoint(mouse_pos)
         
-        # Play sound when hover state changes
-        if self.hovered and not was_hovered:
-            hover_sound.play()
-            
+        # Play sound only when entering hover state (not every frame)
+        if self.hovered and not self.was_hovered:
+            if hover_sound:
+                hover_sound.play()
+    
     def draw(self, screen):
         """Draw the button."""
         color = DARK_RED if self.hovered else RED

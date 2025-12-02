@@ -1,15 +1,11 @@
 import pygame
 
-# ============================================================================
 # SCREEN & MAP CONSTANTS
-# ============================================================================
 WIDTH, HEIGHT = 1366, 768
 MAP_WIDTH = 3000
 MAP_HEIGHT = 3000
 
-# ============================================================================
 # COLORS
-# ============================================================================
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (50, 50, 50)
@@ -21,9 +17,7 @@ GREEN = (0, 255, 0)
 DARK_GREEN = (0, 100, 0)
 YELLOW = (255, 255, 0)
 
-# ============================================================================
 # FONTS
-# ============================================================================
 class Fonts:
     """Container for game fonts."""
     title = None
@@ -40,9 +34,7 @@ def initialize_fonts():
     Fonts.health = pygame.font.Font(pygame.font.match_font('arial'), 25)
     Fonts.score = pygame.font.Font(pygame.font.match_font('arial'), 25)
 
-# ============================================================================
 # IMAGES
-# ============================================================================
 try:
     background_image = pygame.image.load('./assets/images/background/background-ingame-final.png')
 except pygame.error as e:
@@ -50,9 +42,7 @@ except pygame.error as e:
     background_image = pygame.Surface((WIDTH, HEIGHT))
     background_image.fill((50, 50, 50))
 
-# ============================================================================
 # AUDIO
-# ============================================================================
 pygame.mixer.init()
 
 # Music

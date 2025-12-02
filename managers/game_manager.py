@@ -29,7 +29,33 @@ class GameManager:
                         return True
                 if event.key == pygame.K_F3:
                     self.hud.toggle_debug()
+                if event.key == pygame.K_F11:
+                    # Toggle fullscreen
+                    self._toggle_fullscreen()
         return False
+
+    def _toggle_fullscreen(self):
+        """Toggle between windowed and fullscreen."""
+        settings = self.menu.settings
+        is_fullscreen = settings.get("fullscreen", False)
+        
+        if is_fullscreen:
+            # Switch to windowed
+            resolution = settings.get("resolution", (1366, 768))
+            self.screen = pygame.display.set_mode(resolution)
+            settings["fullscreen"] = False
+            settings["borderless"] = False
+        else:
+            # Switch to fullscreen
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            settings["fullscreen"] = True
+            settings["borderless"] = True
+            settings["resolution"] = self.screen.get_size()
+        
+        # Update menu screen reference
+        self.menu.screen = self.screen
+        self.menu.menu_background = self.menu.load_menu_background()
+        self.menu.save_settings()
 
     def update_player(self, player, camera_x, camera_y):
         """Update player movement and combat."""
@@ -177,6 +203,7 @@ class GameManager:
     def run_game_loop(self, player, enemy_manager, achievements):
         """Main game loop."""
         self.frame_count = 0
+        self.achievements = achievements
         boss_projectiles.clear()
 
         # Music management
@@ -191,6 +218,10 @@ class GameManager:
             # Handle events (check for pause or exit)
             return_to_menu = self.handle_events(player, enemy_manager, achievements)
             if return_to_menu:
+                # Clean up and return to main menu
+                game_music.stop()
+                boss_music.stop()
+                main_menu_music.play(-1)
                 return
 
             # Update player
