@@ -110,6 +110,10 @@ class IconButton:
         self.hovered = False
         self.was_hovered = False
         
+        # Debug counter
+        self.debug_update_count = 0
+        self.debug_sound_play_count = 0
+        
         # Load icon
         try:
             self.icon = pygame.image.load(icon_path)
@@ -120,11 +124,14 @@ class IconButton:
     
     def update(self, mouse_pos):
         """Update button hover state."""
-        self.was_hovered = self.hovered
+        self.debug_update_count += 1
+        
+        prev_hovered = self.hovered  # Store BEFORE checking collision
         self.hovered = self.rect.collidepoint(mouse_pos)
         
-        # Play sound only when entering hover state
-        if self.hovered and not self.was_hovered:
+        # Play sound only when transitioning from not-hovered to hovered
+        if self.hovered and not prev_hovered:
+            self.debug_sound_play_count += 1
             if hover_sound:
                 hover_sound.play()
     
@@ -172,14 +179,21 @@ class TextButton:
         self.text_color = text_color
         self.hovered = False
         self.was_hovered = False
+        
+        # Debug counter
+        self.debug_update_count = 0
+        self.debug_sound_play_count = 0
     
     def update(self, mouse_pos):
         """Update button hover state."""
-        self.was_hovered = self.hovered
+        self.debug_update_count += 1
+        
+        prev_hovered = self.hovered
         self.hovered = self.rect.collidepoint(mouse_pos)
         
         # Play sound only when entering hover state
-        if self.hovered and not self.was_hovered:
+        if self.hovered and not prev_hovered:
+            self.debug_sound_play_count += 1
             if hover_sound:
                 hover_sound.play()
     

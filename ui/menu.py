@@ -149,7 +149,23 @@ class Menu:
         utility_button_color = (100, 0, 0)
         utility_button_hover = (70, 0, 0)
         
-        # Create utility icon buttons in bottom-left corner
+        # Calculate centered button positions ONCE
+        center_button_width = 250
+        center_button_height = 60
+        center_button_spacing = 20
+        total_center_height = (center_button_height * 3) + (center_button_spacing * 2)
+        
+        center_x = (screen_width - center_button_width) // 2
+        start_y = (screen_height - total_center_height) // 2
+        
+        # Create main action buttons ONCE OUTSIDE LOOP ✅
+        play_button = Button(center_x, start_y, center_button_width, center_button_height, "Play", self.font_button)
+        skill_button = Button(center_x, start_y + center_button_height + center_button_spacing, 
+                             center_button_width, center_button_height, "Skill Tree", self.font_button)
+        store_button = Button(center_x, start_y + (center_button_height + center_button_spacing) * 2,
+                             center_button_width, center_button_height, "Store", self.font_button)
+        
+        # Create utility icon buttons ONCE OUTSIDE LOOP ✅
         lang_button = IconButton(
             margin,
             screen_height - (button_size * 3) - (margin * 3),
@@ -191,23 +207,7 @@ class Menu:
                 high_score_text = self.font_score.render(f"High Score: {self.high_score}", True, WHITE)
                 self.screen.blit(high_score_text, (20, 20))
             
-            # Calculate centered button positions
-            center_button_width = 250
-            center_button_height = 60
-            center_button_spacing = 20
-            total_center_height = (center_button_height * 3) + (center_button_spacing * 2)
-            
-            center_x = (screen_width - center_button_width) // 2
-            start_y = (screen_height - total_center_height) // 2
-            
-            # Create main action buttons
-            play_button = Button(center_x, start_y, center_button_width, center_button_height, "Play", self.font_button)
-            skill_button = Button(center_x, start_y + center_button_height + center_button_spacing, 
-                                 center_button_width, center_button_height, "Skill Tree", self.font_button)
-            store_button = Button(center_x, start_y + (center_button_height + center_button_spacing) * 2,
-                                 center_button_width, center_button_height, "Store", self.font_button)
-            
-            # Update and draw center buttons
+            # Update and draw center buttons (don't recreate them!)
             play_button.update(mouse_pos)
             skill_button.update(mouse_pos)
             store_button.update(mouse_pos)
@@ -465,12 +465,19 @@ class Menu:
             "effects_volume": Slider(0, 0, 300, 20, 0, 100, self.settings.get("effects_volume", 100)),
         }
 
+        back_button = TextButton(20, 0, 150, 50, "Back", self.font_button)
+        reset_button = TextButton(0, 0, 150, 50, "Reset", self.font_button)
+
         while running:
             # Draw pattern background
             self.pattern_background.draw(self.screen)
             
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            back_button.rect.y = self.screen.get_height() - 70
+            reset_button.rect.x = self.screen.get_width() - 170
+            reset_button.rect.y = self.screen.get_height() - 70
 
             # Draw title
             title_text = self.font_title.render("Settings", True, WHITE)
@@ -549,10 +556,7 @@ class Menu:
                 if current_resolution_index < len(resolutions) - 1:
                     Arrow.draw_right(self.screen, right_arrow_x, right_arrow_y)
 
-            # Create action buttons
-            back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
-            reset_button = TextButton(self.screen.get_width() - 170, self.screen.get_height() - 70, 150, 50, "Reset", self.font_button)
-
+            # Update and draw buttons
             back_button.update(mouse_pos)
             reset_button.update(mouse_pos)
 
@@ -642,6 +646,31 @@ class Menu:
         
         current_language = self.settings.get("language", "en")
         
+        # Language button dimensions
+        button_width = 300
+        button_height = 50
+        button_x = (self.screen.get_width() - button_width) // 2
+        start_y = 150
+        spacing = 20
+        
+        # Create language buttons ONCE outside the loop
+        lang_buttons = []
+        for i, lang in enumerate(languages):
+            button_y = start_y + i * (button_height + spacing)
+            is_selected = lang["code"] == current_language
+            
+            # Different colors for selected language
+            color = GREEN if is_selected else GRAY
+            hover_color = DARK_GREEN if not is_selected else GREEN
+            
+            button = TextButton(button_x, button_y, button_width, button_height, 
+                              lang["name"], self.font_button, 
+                              hover_color=hover_color, normal_color=color)
+            lang_buttons.append((button, lang))
+        
+        # Create back button ONCE
+        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
+        
         while running:
             # Draw pattern background
             self.pattern_background.draw(self.screen)
@@ -652,32 +681,17 @@ class Menu:
             title_text = self.font_title.render("Select Language", True, WHITE)
             self.screen.blit(title_text, ((self.screen.get_width() - title_text.get_width()) // 2, 50))
             
-            # Language button dimensions
-            button_width = 300
-            button_height = 50
-            button_x = (self.screen.get_width() - button_width) // 2
-            start_y = 150
-            spacing = 20
-            
-            # Create language buttons
-            lang_buttons = []
-            for i, lang in enumerate(languages):
-                button_y = start_y + i * (button_height + spacing)
+            # Update and draw language buttons
+            for button, lang in lang_buttons:
+                # Update button colors if language changed
                 is_selected = lang["code"] == current_language
+                button.normal_color = GREEN if is_selected else GRAY
+                button.hover_color = DARK_GREEN if not is_selected else GREEN
                 
-                # Different colors for selected language
-                color = GREEN if is_selected else GRAY
-                hover_color = DARK_GREEN if not is_selected else GREEN
-                
-                button = TextButton(button_x, button_y, button_width, button_height, 
-                                  lang["name"], self.font_button, 
-                                  hover_color=hover_color, normal_color=color)
                 button.update(mouse_pos)
                 button.draw(self.screen)
-                lang_buttons.append((button, lang))
             
-            # Create back button
-            back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
+            # Update and draw back button
             back_button.update(mouse_pos)
             back_button.draw(self.screen)
 
@@ -706,6 +720,8 @@ class Menu:
         """Store menu - placeholder for future implementation."""
         running = True
         
+        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
+        
         while running:
             # Draw pattern background
             self.pattern_background.draw(self.screen)
@@ -720,8 +736,7 @@ class Menu:
             coming_soon = self.font_button.render("Coming Soon!", True, WHITE)
             self.screen.blit(coming_soon, ((self.screen.get_width() - coming_soon.get_width()) // 2, self.screen.get_height() // 2))
             
-            # Create back button
-            back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
+            # Update and draw back button
             back_button.update(mouse_pos)
             back_button.draw(self.screen)
 
@@ -1027,7 +1042,7 @@ class Menu:
             cost_text = self.font_button.render(f"SP: {cost}", True, WHITE)
             effect_text = self.font_button.render(f"{effect}", True, WHITE)
 
-            text_center_x = details_x + 10 + (120 // 2)
+            text_center_x = details_x + 10 + (120 // 2);
 
             self.screen.blit(name_text, (text_center_x - name_text.get_width() // 2, details_y + 200))
             self.screen.blit(cost_text, (text_center_x - cost_text.get_width() // 2, details_y + 240))
