@@ -2,38 +2,28 @@ import pygame
 import sys
 from assets import *
 from player import Player
-from enemy_manager import EnemyManager
+from managers import EnemyManager, GameManager
 from xp import xp_drops
 from menu import Menu
 from projectile import projectiles
-from game_manager import GameManager
 
 pygame.init()
 pygame.mixer.init()
 initialize_fonts()
 
-# Verify that fonts were initialized
-if font_button is None or font_title is None or font_credit is None or font_score is None:
-    # Create fonts directly if the initialization failed
-    font_title = pygame.font.Font(pygame.font.match_font('arial'), 50)
-    font_button = pygame.font.Font(pygame.font.match_font('arial'), 30)
-    font_credit = pygame.font.Font(pygame.font.match_font('arial'), 20)
-    font_score = pygame.font.Font(pygame.font.match_font('arial'), 25)
-    font_health = pygame.font.Font(pygame.font.match_font('arial'), 25)
-
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Vampire Survivors Clone")
 
-# Initialize the menu
-menu = Menu(screen, font_title, font_button, font_credit, font_score)
+# Initialize the menu with Fonts class attributes
+menu = Menu(screen, Fonts.title, Fonts.button, Fonts.credit, Fonts.score)
 
 # Globals for the current player and enemy manager
 current_player = None
 current_enemy_manager = None
 
 def reset_game(achievements=None):
-    """Reset the game state, including the player, enemies, projectiles, and abilities."""
+    """Reset game state - clears enemies, projectiles, and resets player."""
     global current_player, current_enemy_manager
     projectiles.clear()
     xp_drops.clear()
@@ -43,9 +33,9 @@ def reset_game(achievements=None):
         achievements = settings.get("achievements", {})  # Use provided achievements if available
 
     fonts = {
-        'credit': font_credit,
-        'score': font_score,
-        'health': font_health
+        'credit': Fonts.credit,
+        'score': Fonts.score,
+        'health': Fonts.health
     }
     current_player = Player(fonts=fonts)
     skills = settings.get("skills", {})

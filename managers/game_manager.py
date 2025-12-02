@@ -4,7 +4,7 @@ import sys
 from assets import *
 from projectile import *
 from xp import draw_xp_drops, xp_drops
-from enemies.__init__ import *
+from enemies import *
 from abilities.__init__ import *
 
 class GameManager:

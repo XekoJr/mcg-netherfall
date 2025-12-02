@@ -24,20 +24,21 @@ YELLOW = (255, 255, 0)
 # ============================================================================
 # FONTS
 # ============================================================================
-font_title = None
-font_button = None
-font_credit = None
-font_health = None
-font_score = None
+class Fonts:
+    """Container for game fonts."""
+    title = None
+    button = None
+    credit = None
+    health = None
+    score = None
 
 def initialize_fonts():
     """Initialize all game fonts."""
-    global font_title, font_button, font_credit, font_health, font_score
-    font_title = pygame.font.Font(pygame.font.match_font('arial'), 50)
-    font_button = pygame.font.Font(pygame.font.match_font('arial'), 30)
-    font_credit = pygame.font.Font(pygame.font.match_font('arial'), 20)
-    font_health = pygame.font.Font(pygame.font.match_font('arial'), 25)
-    font_score = pygame.font.Font(pygame.font.match_font('arial'), 25)
+    Fonts.title = pygame.font.Font(pygame.font.match_font('arial'), 50)
+    Fonts.button = pygame.font.Font(pygame.font.match_font('arial'), 30)
+    Fonts.credit = pygame.font.Font(pygame.font.match_font('arial'), 20)
+    Fonts.health = pygame.font.Font(pygame.font.match_font('arial'), 25)
+    Fonts.score = pygame.font.Font(pygame.font.match_font('arial'), 25)
 
 # ============================================================================
 # IMAGES
