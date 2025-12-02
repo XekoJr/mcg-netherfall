@@ -1,16 +1,19 @@
 import pygame
-import random
 import sys
 from assets import *
 from projectile import *
 from xp import draw_xp_drops, xp_drops
 from enemies import *
-from abilities.__init__ import *
+from abilities import *
+from ui import HUD, Minimap, draw_debug_hitboxes
+from characters import Gigachad, Ranger
 
 class GameManager:
     def __init__(self, screen, menu):
         self.screen = screen
         self.menu = menu
+        self.hud = HUD()
+        self.minimap = Minimap(size=150, position="top-right")
         self.clock = pygame.time.Clock()
         self.frame_count = 0
 
@@ -20,22 +23,23 @@ class GameManager:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                # Pause the game and display the pause menu
-                return self.menu.pause_menu(
-                    reset_game=self.menu.reset_game, 
-                    game_loop=self.run_game_loop,
-                    achievements=achievements
-                )
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if self.menu.pause_menu(achievements):
+                        return True
+                if event.key == pygame.K_F3:
+                    self.hud.toggle_debug()
         return False
 
     def update_player(self, player, camera_x, camera_y):
-        """Update player movement and shooting"""
+        """Update player movement and combat."""
         player.move()
-        current_time = pygame.time.get_ticks()
-        if current_time - player.last_shot_time > player.fire_rate:
-            fire_projectile(player, camera_x, camera_y)
-            player.last_shot_time = current_time
+        
+        # Handle different attack types
+        if isinstance(player, Gigachad):
+            player.update_attack_animation()
+        
+        player.attack(camera_x, camera_y)
 
     def spawn_enemies(self, enemy_manager, player_level):
         """Handle enemy spawning logic"""
@@ -113,7 +117,7 @@ class GameManager:
         if player.health <= 0:
             death_sound.play()
             new_player, new_enemy_manager, achievements = reset_game(achievements=achievements)
-            self.menu.game_over_screen(player.score, new_enemy_manager, reset_game, self.run_game_loop, achievements)
+            self.menu.game_over_screen(player.score, achievements)  # Fixed: only pass score and achievements
             return True  # Player died, exit game loop
 
         # Remove the projectile
@@ -127,34 +131,51 @@ class GameManager:
         if player.health <= 0:
             death_sound.play()
             new_player, new_enemy_manager, achievements = reset_game(achievements=achievements)
-            self.menu.game_over_screen(player.score, new_enemy_manager, reset_game, self.run_game_loop, achievements)
+            self.menu.game_over_screen(player.score, achievements)  # Fixed: only pass score and achievements
             return True
         return False
 
     def draw_game(self, screen, player, camera_x, camera_y, enemy_manager):
-        """Draw all game elements on the screen"""
-        # Calculate background position
+        """Draw all game elements."""
+        # Background
         background_x = -camera_x
         background_y = -camera_y
 
         # Draw the background
         screen.blit(background_image, (background_x, background_y))
 
-        # Draw game elements
+        # Game entities
         player.draw_with_offset(screen, camera_x, camera_y)
         draw_projectiles(screen, camera_x, camera_y)
         enemy_manager.draw_enemies(screen, camera_x, camera_y, player)
         draw_boss_projectiles(screen, camera_x, camera_y)
         draw_xp_drops(screen, player, camera_x, camera_y)
 
-        # Draw UI elements
-        player.draw_health(screen)
-        player.draw_score(screen)
-        player.draw_xp(screen)
-        player.draw_status_abilities_icons(screen)
+        # HUD
+        self.hud.draw_all(screen, player)
+        
+        # Minimap (draw after HUD so it's on top)
+        self.minimap.draw(screen, player, enemy_manager.enemies, xp_drops, boss_projectiles)
+        
+        # Debug hitboxes (toggle with F3)
+        if self.hud.show_debug:
+            draw_debug_hitboxes(screen, player, enemy_manager.enemies, 
+                              projectiles, boss_projectiles, camera_x, camera_y)
+
+    def handle_Gigachad_attacks(self, player, enemy_manager):
+        """Handle AOE damage from Gigachad attacks."""
+        if isinstance(player, Gigachad) and player.attacking:
+            for enemy in enemy_manager.enemies[:]:
+                if player.is_enemy_in_range(enemy):
+                    if enemy.take_damage(player.attack_damage):
+                        # Enemy died
+                        enemy_manager.handle_enemy_defeat(
+                            enemy, player, xp_drops, 
+                            self.achievements, self.menu.save_settings
+                        )
 
     def run_game_loop(self, player, enemy_manager, achievements):
-        """Main game loop with optimized structure"""
+        """Main game loop."""
         self.frame_count = 0
         boss_projectiles.clear()
 
@@ -172,8 +193,12 @@ class GameManager:
             if return_to_menu:
                 return
 
-            # Update player (movement and shooting)
+            # Update player
             self.update_player(player, camera_x, camera_y)
+
+            # Handle Gigachad AOE attacks
+            if isinstance(player, Gigachad):
+                self.handle_Gigachad_attacks(player, enemy_manager)
 
             # Spawn and update enemies
             self.spawn_enemies(enemy_manager, player.level)

@@ -1,11 +1,11 @@
 import pygame
 import sys
 from assets import *
-from player import Player
 from managers import EnemyManager, GameManager
 from xp import xp_drops
-from menu import Menu
+from ui import Menu
 from projectile import projectiles
+from characters import Ranger, Gigachad
 
 pygame.init()
 pygame.mixer.init()
@@ -22,8 +22,8 @@ menu = Menu(screen, Fonts.title, Fonts.button, Fonts.credit, Fonts.score)
 current_player = None
 current_enemy_manager = None
 
-def reset_game(achievements=None):
-    """Reset game state - clears enemies, projectiles, and resets player."""
+def reset_game(achievements=None, character_type="ranger"):
+    """Reset game with selected character."""
     global current_player, current_enemy_manager
     projectiles.clear()
     xp_drops.clear()
@@ -37,7 +37,13 @@ def reset_game(achievements=None):
         'score': Fonts.score,
         'health': Fonts.health
     }
-    current_player = Player(fonts=fonts)
+    
+    # Create character based on type
+    if character_type == "gigachad":
+        current_player = Gigachad(fonts=fonts)
+    else:  # Default to ranger
+        current_player = Ranger(fonts=fonts)
+    
     skills = settings.get("skills", {})
     current_player.initialize_abilities(skills)
     current_player.apply_skill_upgrades(skills)
@@ -48,22 +54,15 @@ def reset_game(achievements=None):
 
     return current_player, current_enemy_manager, achievements
 
-# Add reset_game method to Menu class for use in GameManager
+game_manager = GameManager(screen, menu)
+
+# Then set callbacks
 menu.reset_game = reset_game
-menu.save_settings = menu.save_settings
+menu.game_loop = game_manager.run_game_loop
 
 if __name__ == "__main__":
-    # Create game manager
-    game_manager = GameManager(screen, menu)
-    
     # Set up the initial game state
     current_player, current_enemy_manager, achievements = reset_game()
     
     # Start the game from the main menu
-    menu.main_menu(
-        current_player, 
-        current_enemy_manager, 
-        reset_game, 
-        game_manager.run_game_loop, 
-        achievements
-    )
+    menu.main_menu(current_player, current_enemy_manager, achievements)

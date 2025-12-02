@@ -3,41 +3,41 @@ import os
 import pygame
 import sys
 import random
-from player import Player
 from assets import *
+from ui.ui_elements import Button
 
 class Menu:
+    """Handles all menu screens."""
+    
     def __init__(self, screen, font_title=None, font_button=None, font_credit=None, font_score=None):
         self.screen = screen
         self.settings_file = "./utils.json"
         self.settings = self.load_settings()
         self.menu_background = self.load_menu_background()
         self.high_score = self.settings.get("high_score", 0)
-        self.resolutions = [
-            (1366, 768), (1280, 720), (1024, 576)
-        ]
+        self.resolutions = [(1366, 768), (1280, 720), (1024, 576)]
         
-        # Store the fonts
+        # Fonts
         self.font_title = font_title
         self.font_button = font_button 
         self.font_credit = font_credit
         self.font_score = font_score
+        
+        # Game state callbacks (set by main)
+        self.reset_game = None
+        self.game_loop = None
 
     def load_menu_background(self):
-        """Load and scale the menu background to the current resolution."""
+        """Load and scale menu background."""
         try:
-            # Load the background image
-            menu_background = pygame.image.load("./assets/images/background/gameart-cover.jpg")
-            
-            # Dynamically stretch the background to fit the resolution
-            scaled_background = pygame.transform.scale(menu_background, (self.screen.get_width(), self.screen.get_height()))
-            return scaled_background
+            bg = pygame.image.load("./assets/images/background/gameart-cover.jpg")
+            return pygame.transform.scale(bg, (self.screen.get_width(), self.screen.get_height()))
         except pygame.error as e:
-            print("Error loading menu background image:", e)
+            print(f"Error loading menu background: {e}")
             return None
 
     def load_settings(self):
-        """Load the settings from the utils.json file, or create defaults if the file is empty or missing."""
+        """Load settings from file."""
         default_settings = {
             "master_volume": 100,
             "music_volume": 100,
@@ -231,7 +231,7 @@ class Menu:
         return settings
 
     def save_settings(self, achievements=None):
-        """Save the settings to the utils.json file."""
+        """Save settings to file."""
         try:
             with open(self.settings_file, "r+") as f:
                 try:
@@ -256,7 +256,16 @@ class Menu:
             with open(self.settings_file, "w") as f:
                 json.dump(self.settings, f, indent=4)
                 
+    def convert_score_to_skill_points(self, score):
+        """Convert score to skill points."""
+        skill_points_earned = score // 100
+        self.settings["skill_points"] += skill_points_earned
+        self.save_settings()
+
+        return skill_points_earned
+
     def save_high_score(self, score):
+        """Save high score."""
         try:
             with open(self.settings_file, "r+") as f:
                 data = json.load(f)
@@ -268,127 +277,214 @@ class Menu:
             with open(self.settings_file, "w") as f:
                 json.dump({"high_score": score}, f, indent=4)
 
-    def main_menu(self, player, enemy_manager, reset_game, game_loop, achievements):
-        """Displays the main menu."""
-
-        main_menu_music.play(-1)  # Loop the music indefinitely
-
+    def main_menu(self, player, enemy_manager, achievements):
+        """Main menu screen."""
+        main_menu_music.play(-1)
         running = True
-
-        button_margin = 20  # Margin between buttons and screen edges
+        
+        # Create buttons
+        margin = 20
         button_width, button_height = 200, 50
-
-        # To track hover state and play sound only once per hover
-        hovered_button = None
-
+        button_x = margin
+        button_y = self.screen.get_height() - (button_height * 4) - (margin * 4)
+        
+        start_button = Button(button_x, button_y, button_width, button_height, 
+                             "Start Game", self.font_button)
+        skill_button = Button(button_x, button_y + button_height + margin, button_width, button_height,
+                             "Skill Tree", self.font_button)
+        settings_button = Button(button_x, button_y + (button_height + margin) * 2, button_width, button_height,
+                               "Settings", self.font_button)
+        quit_button = Button(button_x, button_y + (button_height + margin) * 3, button_width, button_height,
+                           "Quit", self.font_button)
+        
         while running:
+            mouse_pos = pygame.mouse.get_pos()
+            
+            # Draw background
             if self.menu_background:
                 self.screen.blit(self.menu_background, (0, 0))
             else:
                 self.screen.fill(BLACK)
-
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            # Display high score in the top-left corner
+            
+            # Draw high score
             if self.high_score > 0:
                 high_score_text = self.font_score.render(f"High Score: {self.high_score}", True, WHITE)
-                self.screen.blit(high_score_text, (
-                    button_margin,
-                    button_margin
-                ))
-
-           # Define button positions (adjust alignment to pull buttons higher)
-            button_x = button_margin
-            button_y = self.screen.get_height() - (button_height * 4) - button_margin * 4
-
-            # Start Game Button
-            start_hovered = button_x < mouse_x < button_x + button_width and \
-                            button_y < mouse_y < button_y + button_height
-            button_color = DARK_RED if start_hovered else RED
-            pygame.draw.rect(self.screen, button_color, (button_x, button_y, button_width, button_height))
-            button_text = self.font_button.render("Start Game", True, WHITE)
-            self.screen.blit(button_text, (
-                button_x + (button_width - button_text.get_width()) // 2,
-                button_y + (button_height - button_text.get_height()) // 2
-            ))
-
-            # Skill Tree Button
-            skill_tree_y = button_y + button_height + button_margin
-            skill_tree_hovered = button_x < mouse_x < button_x + button_width and \
-                                skill_tree_y < mouse_y < skill_tree_y + button_height
-            skill_tree_button_color = DARK_RED if skill_tree_hovered else RED
-            pygame.draw.rect(self.screen, skill_tree_button_color, (button_x, skill_tree_y, button_width, button_height))
-            skill_tree_text = self.font_button.render("Skill Tree", True, WHITE)
-            self.screen.blit(skill_tree_text, (
-                button_x + (button_width - skill_tree_text.get_width()) // 2,
-                skill_tree_y + (button_height - skill_tree_text.get_height()) // 2
-            ))
-
-            # Settings Button
-            settings_y = skill_tree_y + button_height + button_margin
-            settings_hovered = button_x < mouse_x < button_x + button_width and \
-                            settings_y < mouse_y < settings_y + button_height
-            settings_button_color = DARK_RED if settings_hovered else RED
-            pygame.draw.rect(self.screen, settings_button_color, (button_x, settings_y, button_width, button_height))
-            settings_text = self.font_button.render("Settings", True, WHITE)
-            self.screen.blit(settings_text, (
-                button_x + (button_width - settings_text.get_width()) // 2,
-                settings_y + (button_height - settings_text.get_height()) // 2
-            ))
-
-            # Quit Button
-            quit_y = settings_y + button_height + button_margin
-            quit_hovered = button_x < mouse_x < button_x + button_width and \
-                        quit_y < mouse_y < quit_y + button_height
-            quit_button_color = DARK_RED if quit_hovered else RED
-            pygame.draw.rect(self.screen, quit_button_color, (button_x, quit_y, button_width, button_height))
-            quit_text = self.font_button.render("Quit", True, WHITE)
-            self.screen.blit(quit_text, (
-                button_x + (button_width - quit_text.get_width()) // 2,
-                quit_y + (button_height - quit_text.get_height()) // 2
-            ))
-
-            # Play hover sound when hovering over a button
-            if start_hovered and hovered_button != "start":
-                hover_sound.play()
-                hovered_button = "start"
-            elif skill_tree_hovered and hovered_button != "skill_tree":
-                hover_sound.play()
-                hovered_button = "skill_tree"
-            elif settings_hovered and hovered_button != "settings":
-                hover_sound.play()
-                hovered_button = "settings"
-            elif quit_hovered and hovered_button != "quit":
-                hover_sound.play()
-                hovered_button = "quit"
-            elif not (start_hovered or skill_tree_hovered or settings_hovered or quit_hovered):
-                hovered_button = None
-
-            # Handle Button Clicks
+                self.screen.blit(high_score_text, (margin, margin))
+            
+            # Update and draw buttons
+            start_button.update(mouse_pos)
+            skill_button.update(mouse_pos)
+            settings_button.update(mouse_pos)
+            quit_button.update(mouse_pos)
+            
+            start_button.draw(self.screen)
+            skill_button.draw(self.screen)
+            settings_button.draw(self.screen)
+            quit_button.draw(self.screen)
+            
+            # Handle events
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.save_settings(achievements=achievements)
+                    pygame.quit()
+                    sys.exit()
+                    
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if start_hovered:
-                        # Start the game logic here
+                    if start_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
                         running = False
-                    elif skill_tree_hovered:
-                        # Open the skill tree menu
-                        self.skill_tree_menu(player, achievements=achievements)
-                    elif settings_hovered:
-                        # Open the settings menu
+                        # Call game loop through callback
+                        if self.reset_game and self.game_loop:
+                            player, enemy_manager, achievements = self.reset_game(achievements)
+                            self.game_loop(player, enemy_manager, achievements)
+                            
+                    elif skill_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
+                        self.skill_tree_menu(player, achievements)
+                        
+                    elif settings_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
                         self.settings_menu()
-                    elif quit_hovered:
-                        # Quit the game
+                        
+                    elif quit_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
                         self.save_settings(achievements=achievements)
                         pygame.quit()
                         sys.exit()
-
+            
             pygame.display.flip()
 
-        reset_game(achievements=achievements)
-        game_loop(player, enemy_manager, achievements)
+    def pause_menu(self, achievements):
+        """Pause menu screen."""
+        paused = True
+        
+        # Create buttons
+        screen_width = self.screen.get_width()
+        button_width, button_height = 200, 50
+        button_x = (screen_width - button_width) // 2
+        
+        continue_button = Button(button_x, 300, button_width, button_height,
+                                "Continue", self.font_button)
+        menu_button = Button(button_x, 400, button_width, button_height,
+                           "Main Menu", self.font_button)
+        
+        while paused:
+            mouse_pos = pygame.mouse.get_pos()
+            self.screen.fill(BLACK)
+            
+            # Title
+            title_text = self.font_title.render("Paused", True, WHITE)
+            self.screen.blit(title_text, (
+                (screen_width - title_text.get_width()) // 2, 150
+            ))
+            
+            # Update and draw buttons
+            continue_button.update(mouse_pos)
+            menu_button.update(mouse_pos)
+            
+            continue_button.draw(self.screen)
+            menu_button.draw(self.screen)
+            
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                    
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    click_sound.play()
+                    paused = False
+                    
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if continue_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
+                        paused = False
+                        
+                    elif menu_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
+                        game_music.stop()
+                        boss_music.stop()
+                        return True  # Signal to return to main menu
+            
+            pygame.display.flip()
+        
+        return False
+
+    def game_over_screen(self, score, achievements):
+        """Game over screen."""
+        game_music.stop()
+        boss_music.stop()
+        
+        # Convert score to skill points
+        new_skill_points = self.convert_score_to_skill_points(score)
+        self.save_settings(achievements=achievements)
+        
+        # Update high score
+        if score > self.high_score:
+            self.high_score = score
+            self.save_high_score(score)
+        
+        running = True
+        screen_width = self.screen.get_width()
+        screen_height = self.screen.get_height()
+        
+        # Create buttons
+        button_width, button_height = 200, 50
+        button_x = (screen_width - button_width) // 2
+        
+        restart_button = Button(button_x, screen_height // 2, button_width, button_height,
+                               "Restart", self.font_button)
+        menu_button = Button(button_x, screen_height // 2 + 70, button_width, button_height,
+                           "Main Menu", self.font_button)
+        
+        while running:
+            mouse_pos = pygame.mouse.get_pos()
+            self.screen.fill(BLACK)
+            
+            # Display texts
+            game_over_text = self.font_title.render("Game Over", True, WHITE)
+            score_text = self.font_score.render(f"Final Score: {score}", True, WHITE)
+            sp_text = self.font_score.render(f"New Skill Points: {new_skill_points}", True, WHITE)
+            
+            self.screen.blit(game_over_text, 
+                           (screen_width // 2 - game_over_text.get_width() // 2, screen_height // 4))
+            self.screen.blit(score_text,
+                           (screen_width // 2 - score_text.get_width() // 2, screen_height // 4 + 80))
+            self.screen.blit(sp_text,
+                           (screen_width // 2 - sp_text.get_width() // 2, screen_height // 4 + 110))
+            
+            # Update and draw buttons
+            restart_button.update(mouse_pos)
+            menu_button.update(mouse_pos)
+            
+            restart_button.draw(self.screen)
+            menu_button.draw(self.screen)
+            
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                    
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if restart_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
+                        if self.reset_game and self.game_loop:
+                            player, enemy_manager, achievements = self.reset_game(achievements)
+                            self.game_loop(player, enemy_manager, achievements)
+                        return
+                        
+                    elif menu_button.rect.collidepoint(mouse_pos):
+                        click_sound.play()
+                        if self.reset_game:
+                            player, enemy_manager, achievements = self.reset_game(achievements)
+                            self.main_menu(player, enemy_manager, achievements)
+                        return
+            
+            pygame.display.flip()
 
     def settings_menu(self):
-        """Displays the settings menu."""
+        """Settings menu - keep existing code."""
         running = True
 
         # Define available resolutions
@@ -571,329 +667,8 @@ class Menu:
 
             pygame.display.flip()
 
-    def convert_score_to_skill_points(self, score):
-        """Convert score to skill points."""
-        skill_points_earned = score // 100
-        self.settings["skill_points"] += skill_points_earned
-        self.save_settings()
-
-        return skill_points_earned
-
-    def pause_menu(self, reset_game, game_loop, achievements):
-        """Displays the pause menu."""
-        paused = True
-
-        while paused:
-            self.screen.fill(BLACK)
-
-            # Get mouse position
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            # Title
-            title_text = self.font_button.render("Paused", True, WHITE)
-            self.screen.blit(title_text, (
-                (self.screen.get_width() - title_text.get_width()) // 2,
-                150
-            ))
-
-            # Continue Button
-            continue_button_width, continue_button_height = 200, 50
-            continue_button_x = (self.screen.get_width() - continue_button_width) // 2
-            continue_button_y = 300
-            continue_hovered = continue_button_x < mouse_x < continue_button_x + continue_button_width and \
-                            continue_button_y < mouse_y < continue_button_y + continue_button_height
-            continue_button_color = DARK_RED if continue_hovered else RED
-            pygame.draw.rect(self.screen, continue_button_color, (continue_button_x, continue_button_y, continue_button_width, continue_button_height))
-            continue_text = self.font_button.render("Continue", True, WHITE)
-            self.screen.blit(continue_text, (
-                continue_button_x + (continue_button_width - continue_text.get_width()) // 2,
-                continue_button_y + (continue_button_height - continue_text.get_height()) // 2
-            ))
-
-            # Return to Menu Button
-            return_button_width, return_button_height = 200, 50
-            return_button_x = (self.screen.get_width() - return_button_width) // 2
-            return_button_y = 400
-            return_hovered = return_button_x < mouse_x < return_button_x + return_button_width and \
-                            return_button_y < mouse_y < return_button_y + return_button_height
-            return_button_color = DARK_RED if return_hovered else RED
-            pygame.draw.rect(self.screen, return_button_color, (return_button_x, return_button_y, return_button_width, return_button_height))
-            return_text = self.font_button.render("Return to Menu", True, WHITE)
-            self.screen.blit(return_text, (
-                return_button_x + (return_button_width - return_text.get_width()) // 2,
-                return_button_y + (return_button_height - return_text.get_height()) // 2
-            ))
-
-            # Event Handling
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if continue_hovered:
-                        click_sound.play()
-                        paused = False  # Resume the game
-                    # Main Menu Button
-                    elif return_hovered:
-                        click_sound.play()  # Play click sound
-                        game_music.stop()
-                        boss_music.stop()
-                        running = False
-                        current_player, current_enemy_manager, achievements = reset_game(achievements)
-                        self.main_menu(current_player, current_enemy_manager, reset_game, game_loop, achievements)
-                        return
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    click_sound.play()
-                    game_music.stop()
-                    boss_music.stop()
-                    paused = False  # Resume the game if "Esc" is pressed again
-
-            # Update the display
-            pygame.display.flip()
-
-        return False  # Continue the game
-
-    def game_over_screen(self, score, enemy_manager, reset_game, game_loop, achievements):
-        """Display the Game Over screen and save achievements."""
-        
-        # Stop the game music
-        game_music.stop()
-        boss_music.stop()
-
-        running = True
-
-        # Convert score to skill points
-        new_skill_points = self.convert_score_to_skill_points(score)
-        self.save_settings(achievements=achievements)
-
-        # Update high score if necessary
-        if score > self.high_score:
-            self.high_score = score
-            self.save_high_score(score)
-
-        hovered_button = None  # To track which button is hovered
-
-        while running:
-            self.screen.fill(BLACK)
-
-            # Get screen dimensions dynamically
-            screen_width = self.screen.get_width()
-            screen_height = self.screen.get_height()
-
-            # Display "Game Over" text
-            game_over_text = self.font_title.render("Game Over", True, WHITE)
-            self.screen.blit(game_over_text, 
-                            (screen_width // 2 - game_over_text.get_width() // 2, screen_height // 4))
-
-            # Display Final Score
-            score_text = self.font_score.render(f"Final Score: {score}", True, WHITE)
-            self.screen.blit(score_text, 
-                            (screen_width // 2 - score_text.get_width() // 2, screen_height // 4 + 80))
-
-            # Display New Skill Points
-            skill_points_text = self.font_score.render(f"New Skill Points: {new_skill_points}", True, WHITE)
-            self.screen.blit(skill_points_text, 
-                            (screen_width // 2 - skill_points_text.get_width() // 2, screen_height // 4 + 110))
-
-            # Get mouse position
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            # Restart Button
-            restart_button_x = screen_width // 2 - 100
-            restart_button_y = screen_height // 2
-            restart_hovered = restart_button_x < mouse_x < restart_button_x + 200 and \
-                            restart_button_y < mouse_y < restart_button_y + 50
-            restart_button_color = DARK_RED if restart_hovered else RED
-            pygame.draw.rect(self.screen, restart_button_color, 
-                            (restart_button_x, restart_button_y, 200, 50))
-            restart_text = self.font_button.render("Restart", True, WHITE)
-            self.screen.blit(restart_text, 
-                            (restart_button_x + (200 - restart_text.get_width()) // 2, 
-                            restart_button_y + (50 - restart_text.get_height()) // 2))
-
-            # Main Menu Button
-            menu_button_x = screen_width // 2 - 100
-            menu_button_y = restart_button_y + 70
-            menu_hovered = menu_button_x < mouse_x < menu_button_x + 200 and \
-                        menu_button_y < mouse_y < menu_button_y + 50
-            menu_button_color = DARK_RED if menu_hovered else RED
-            pygame.draw.rect(self.screen, menu_button_color, 
-                            (menu_button_x, menu_button_y, 200, 50))
-            menu_text = self.font_button.render("Main Menu", True, WHITE)
-            self.screen.blit(menu_text, 
-                            (menu_button_x + (200 - menu_text.get_width()) // 2, 
-                            menu_button_y + (50 - menu_text.get_height()) // 2))
-
-            # Play hover sound for buttons
-            if restart_hovered and hovered_button != "restart":
-                hover_sound.play()
-                hovered_button = "restart"
-            elif menu_hovered and hovered_button != "menu":
-                hover_sound.play()
-                hovered_button = "menu"
-            elif not restart_hovered and not menu_hovered and hovered_button is not None:
-                hovered_button = None
-
-            # Event handling
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Restart Button
-                    if restart_hovered:
-                        click_sound.play()  # Play click sound
-                        current_player, current_enemy_manager, achievements = reset_game(achievements)
-                        running = False
-                        game_loop(current_player, current_enemy_manager, achievements)  # Start a new game loop
-                        return
-
-                    # Main Menu Button
-                    if menu_hovered:
-                        click_sound.play()  # Play click sound
-                        running = False
-                        current_player, current_enemy_manager, achievements = reset_game(achievements)
-                        self.main_menu(current_player, current_enemy_manager, reset_game, game_loop, achievements)
-                        return
-
-            pygame.display.flip()
-
-    def level_up_menu(self, player, screen):
-        """Displays the level-up menu and lets the player choose an upgrade."""
-        running = True
-
-        # Play the level-up sound
-        level_up_sound.play()
-
-        # Define all possible upgrades
-        all_upgrades = [
-            {"text": "Increase Fire Rate by 20%", "upgrade": "fire_rate"},
-            {"text": "Increase Damage by 30%", "upgrade": "damage"},
-            {"text": "Restore 40 HP", "upgrade": "health"},
-            {"text": "Increase Max Health by 20", "upgrade": "max_health"},
-            {"text": "Increase Speed by 13%", "upgrade": "speed"},
-            {"text": "Increase Crit Chance by 5%", "upgrade": "crit_chance"}
-        ]
-
-        # Randomly select 3 upgrades
-        selected_upgrades = random.sample(all_upgrades, 3)
-
-        hovered_button = None  # To track which button is hovered
-
-        while running:
-            self.screen.fill(BLACK)
-
-            # Get dynamic screen dimensions
-            screen_width = self.screen.get_width()
-            screen_height = self.screen.get_height()
-
-            # Render the title text
-            title_text = self.font_title.render("Level Up!", True, WHITE)
-            screen.blit(title_text, (
-                screen_width // 2 - title_text.get_width() // 2, 
-                screen_height // 4 - 50
-            ))
-
-            # Mouse position
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            # Draw buttons and check hover
-            button_rects = []  # Store button rects for later click detection
-            for i, option in enumerate(selected_upgrades):
-                # Button dimensions
-                button_width = 350
-                button_height = 50
-                button_x = screen_width // 2 - button_width // 2
-                button_y = screen_height // 4 + 80 + i * 100
-
-                # Detect hover
-                is_hovered = button_x < mouse_x < button_x + button_width and button_y < mouse_y < button_y + button_height
-                button_color = DARK_RED if is_hovered else RED
-
-                # Draw the button
-                pygame.draw.rect(screen, button_color, (button_x, button_y, button_width, button_height))
-
-                # Render button text
-                option_text = self.font_button.render(option["text"], True, WHITE)
-                screen.blit(option_text, (
-                    button_x + (button_width - option_text.get_width()) // 2,
-                    button_y + (button_height - option_text.get_height()) // 2
-                ))
-
-                # Play hover sound
-                if is_hovered and hovered_button != i:
-                    hover_sound.play()
-                    hovered_button = i
-                elif not is_hovered and hovered_button == i:
-                    hovered_button = None
-
-                # Add button rect for click detection
-                button_rects.append(pygame.Rect(button_x, button_y, button_width, button_height))
-
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    for i, rect in enumerate(button_rects):
-                        if rect.collidepoint(mouse_x, mouse_y):  # Check if click is inside button rect
-                            click_sound.play()  # Play click sound
-                            player.apply_upgrade(selected_upgrades[i]["upgrade"])
-                            running = False  # Exit menu
-
-            pygame.display.flip()
-
-        # Update last_shot_time to avoid firing immediately after exiting the menu
-        player.last_shot_time = pygame.time.get_ticks()
-
-    def can_upgrade(self, skill_name):
-        """Check if a skill can be upgraded."""
-        skill_data = self.settings["skills"].get(skill_name)
-        if not skill_data:
-            return False
-
-        # Check if skill is maxed out
-        if skill_data["level"] >= skill_data["max_level"]:
-            return False
-
-        # Check skill points
-        current_level = skill_data["level"]
-        required_points = skill_data["costs"][current_level]
-        if self.settings["skill_points"] < required_points:
-            return False
-
-        # Check skill prerequisites
-        if skill_data["requires"]:  # Ensure 'requires' is not None
-            for prereq_skill, prereq_level in skill_data["requires"]:
-                prereq_data = self.settings["skills"].get(prereq_skill)
-                if not prereq_data or prereq_data["level"] < prereq_level:
-                    return False
-
-        # Check achievement requirements
-        achievement_required = skill_data.get("achievement_required")
-        if achievement_required and not self.settings["achievements"].get(achievement_required):
-            return False
-
-        return True
-
-    def upgrade_skill(self, skill_name):
-        """Upgrade the specified skill if possible."""
-        if not self.can_upgrade(skill_name):
-            return False
-
-        skill_data = self.settings["skills"][skill_name]
-        current_level = skill_data["level"]
-        required_points = skill_data["costs"][current_level]
-
-        # Deduct skill points and increase skill level
-        self.settings["skill_points"] -= required_points
-        skill_data["level"] += 1
-        return True
-
-
-    def skill_tree_menu(self, player, achievements=None):
-        """Display the skill tree and handle interactions."""
+    def skill_tree_menu(self, player, achievements):
+        """Skill tree menu - keep existing code."""
         running = True
         selected_skill = None  # Currently selected skill for the right panel
         upgrade_button = None  # Track the upgrade button rect
@@ -1179,3 +954,92 @@ class Menu:
                             skill_failed_sound.play()
 
             pygame.display.flip()
+
+    def level_up_menu(self, player, screen):
+        """Displays the level-up menu and lets the player choose an upgrade."""
+        running = True
+
+        # Play the level-up sound
+        level_up_sound.play()
+
+        # Define all possible upgrades
+        all_upgrades = [
+            {"text": "Increase Fire Rate by 20%", "upgrade": "fire_rate"},
+            {"text": "Increase Damage by 30%", "upgrade": "damage"},
+            {"text": "Restore 40 HP", "upgrade": "health"},
+            {"text": "Increase Max Health by 20", "upgrade": "max_health"},
+            {"text": "Increase Speed by 13%", "upgrade": "speed"},
+            {"text": "Increase Crit Chance by 5%", "upgrade": "crit_chance"}
+        ]
+
+        # Randomly select 3 upgrades
+        selected_upgrades = random.sample(all_upgrades, 3)
+
+        hovered_button = None  # To track which button is hovered
+
+        while running:
+            self.screen.fill(BLACK)
+
+            # Get dynamic screen dimensions
+            screen_width = self.screen.get_width()
+            screen_height = self.screen.get_height()
+
+            # Render the title text
+            title_text = self.font_title.render("Level Up!", True, WHITE)
+            screen.blit(title_text, (
+                screen_width // 2 - title_text.get_width() // 2, 
+                screen_height // 4 - 50
+            ))
+
+            # Mouse position
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+
+            # Draw buttons and check hover
+            button_rects = []  # Store button rects for later click detection
+            for i, option in enumerate(selected_upgrades):
+                # Button dimensions
+                button_width = 350
+                button_height = 50
+                button_x = screen_width // 2 - button_width // 2
+                button_y = screen_height // 4 + 80 + i * 100
+
+                # Detect hover
+                is_hovered = button_x < mouse_x < button_x + button_width and button_y < mouse_y < button_y + button_height
+                button_color = DARK_RED if is_hovered else RED
+
+                # Draw the button
+                pygame.draw.rect(screen, button_color, (button_x, button_y, button_width, button_height))
+
+                # Render button text
+                option_text = self.font_button.render(option["text"], True, WHITE)
+                screen.blit(option_text, (
+                    button_x + (button_width - option_text.get_width()) // 2,
+                    button_y + (button_height - option_text.get_height()) // 2
+                ))
+
+                # Play hover sound
+                if is_hovered and hovered_button != i:
+                    hover_sound.play()
+                    hovered_button = i
+                elif not is_hovered and hovered_button == i:
+                    hovered_button = None
+
+                # Add button rect for click detection
+                button_rects.append(pygame.Rect(button_x, button_y, button_width, button_height))
+
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for i, rect in enumerate(button_rects):
+                        if rect.collidepoint(mouse_x, mouse_y):  # Check if click is inside button rect
+                            click_sound.play()  # Play click sound
+                            player.apply_upgrade(selected_upgrades[i]["upgrade"])
+                            running = False  # Exit menu
+
+            pygame.display.flip()
+
+        # Update last_shot_time to avoid firing immediately after exiting the menu
+        player.last_shot_time = pygame.time.get_ticks()
