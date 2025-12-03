@@ -53,7 +53,20 @@
     "store": {
         "title": "Store",
         "coming_soon": "Coming Soon!",
-        "back": "Back"
+        "back": "Back",
+        "cost": "Cost: {cost} SP",
+        "purchase": "Purchase",
+        "owned": "OWNED",
+        "magnet_name": "XP Magnet",
+        "magnet_desc": "Attracts all XP on the map to you instantly",
+        "heal_name": "Health Pack",
+        "heal_desc": "Restores 50% of your maximum health",
+        "speed_name": "Speed Boost",
+        "speed_desc": "Increases movement speed by 50% for 10 seconds",
+        "rage_name": "Rage Mode",
+        "rage_desc": "Increases attack speed by 50% for 10 seconds",
+        "bomb_name": "Bomb",
+        "bomb_desc": "Deals massive damage to all enemies on the map"
     },
     "level_up": {
         "title": "Level Up!",

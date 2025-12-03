@@ -772,42 +772,6 @@ class Menu:
         
             pygame.display.flip()
 
-    def store_menu(self, player, achievements):
-        """Store menu - placeholder for future implementation."""
-        running = True
-        
-        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, 
-                                self.t('store.back'), self.font_button)
-        
-        while running:
-            # Draw pattern background
-            self.pattern_background.draw(self.screen)
-            
-            mouse_pos = pygame.mouse.get_pos()
-            
-            title_text = self.font_title.render(self.t('store.title'), True, WHITE)
-            self.screen.blit(title_text, ((self.screen.get_width() - title_text.get_width()) // 2, 100))
-            
-            coming_soon = self.font_button.render(self.t('store.coming_soon'), True, WHITE)
-            self.screen.blit(coming_soon, ((self.screen.get_width() - coming_soon.get_width()) // 2, self.screen.get_height() // 2))
-            
-            # Update and draw back button
-            back_button.update(mouse_pos)
-            back_button.draw(self.screen)
-
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                    
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if back_button.is_clicked(mouse_pos):
-                        click_sound.play()
-                        running = False
-        
-            pygame.display.flip()
-
     def level_up_menu(self, player, screen):
         """Display level-up menu with three random upgrade options."""
         running = True
@@ -1170,6 +1134,287 @@ class Menu:
                             self.save_settings()
                             render_screen()
                         else:
+                            skill_failed_sound.play()
+
+            pygame.display.flip()
+
+    def store_menu(self, player, achievements):
+        """Store menu for purchasing powerups."""
+        running = True
+        selected_powerup = None
+        purchase_button = None
+
+        # Get screen dimensions for scaling
+        screen_width, screen_height = self.settings["resolution"]
+
+        # Initialize powerups in settings if not present
+        if "powerups" not in self.settings:
+            self.settings["powerups"] = {
+                'magnet': {'purchased': False, 'cost': 500},
+                'bomb': {'purchased': False, 'cost': 1000},
+                'speed': {'purchased': False, 'cost': 750},
+                'rage': {'purchased': False, 'cost': 750},
+                'heal': {'purchased': False, 'cost': 500}
+            }
+            self.save_settings()
+
+        # Powerup display information
+        powerup_info = {
+            'magnet': {
+                'name': self.t('store.magnet_name'),
+                'description': self.t('store.magnet_desc'),
+                'icon': './assets/images/powerups/magnet.png'
+            },
+            'heal': {
+                'name': self.t('store.heal_name'),
+                'description': self.t('store.heal_desc'),
+                'icon': './assets/images/powerups/heal.png'
+            },
+            'speed': {
+                'name': self.t('store.speed_name'),
+                'description': self.t('store.speed_desc'),
+                'icon': './assets/images/powerups/speed.png'
+            },
+            'rage': {
+                'name': self.t('store.rage_name'),
+                'description': self.t('store.rage_desc'),
+                'icon': './assets/images/powerups/rage.png'
+            },
+            'bomb': {
+                'name': self.t('store.bomb_name'),
+                'description': self.t('store.bomb_desc'),
+                'icon': './assets/images/powerups/bomb.png'
+            }
+        }
+
+        # Powerup positions in grid layout
+        powerup_positions = {
+            'magnet': (150, 150),
+            'heal': (350, 150),
+            'speed': (150, 350),
+            'rage': (350, 350),
+            'bomb': (250, 550)
+        }
+
+        def render_screen():
+            """Render the complete store screen."""
+            nonlocal purchase_button
+            
+            # Draw pattern background
+            self.pattern_background.draw(self.screen)
+            
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+
+            # Display skill points
+            sp_text = self.font_score.render(
+                self.t('skill_tree.skill_points', points=self.settings['skill_points']), 
+                True, WHITE
+            )
+            self.screen.blit(sp_text, (20, 20))
+
+            # Store title
+            title_text = self.font_title.render(self.t('store.title'), True, WHITE)
+            self.screen.blit(title_text, ((screen_width - title_text.get_width()) // 2, 50))
+
+            # Draw powerup nodes
+            for powerup_id, (x, y) in powerup_positions.items():
+                powerup_data = self.settings["powerups"][powerup_id]
+                is_purchased = powerup_data['purchased']
+                info = powerup_info[powerup_id]
+
+                # Highlight if hovered
+                node_rect = pygame.Rect(x - 40, y - 40, 80, 80)
+                is_hovered = node_rect.collidepoint(mouse_x, mouse_y)
+                
+                if is_hovered:
+                    pygame.draw.rect(self.screen, RED, node_rect, 5)
+
+                # Draw frame
+                if is_purchased:
+                    try:
+                        frame = pygame.image.load('./assets/images/stats/stats-frame-1.png')
+                        frame = pygame.transform.scale(frame, (80, 80))
+                        self.screen.blit(frame, (x - 40, y - 40))
+                    except FileNotFoundError:
+                        pass
+
+                # Draw icon
+                try:
+                    icon = pygame.image.load(info['icon'])
+                    icon = pygame.transform.scale(icon, (60, 60))
+                    self.screen.blit(icon, (x - 30, y - 30))
+                    
+                    # Draw "OWNED" badge if purchased
+                    if is_purchased:
+                        owned_text = self.font_credit.render("OWNED", True, GREEN)
+                        self.screen.blit(owned_text, (
+                            x - owned_text.get_width() // 2,
+                            y + 50
+                        ))
+                except (pygame.error, FileNotFoundError):
+                    # Draw placeholder
+                    pygame.draw.rect(self.screen, GRAY, (x - 30, y - 30, 60, 60))
+
+            # Draw selected powerup details
+            if selected_powerup:
+                purchase_button = render_selected_powerup(selected_powerup)
+
+            # Draw back button
+            back_button_x = 20
+            back_button_y = screen_height - 70
+            back_button_width, back_button_height = 150, 50
+            
+            back_hovered = (back_button_x < mouse_x < back_button_x + back_button_width and 
+                          back_button_y < mouse_y < back_button_y + back_button_height)
+            back_button_color = DARK_RED if back_hovered else RED
+            
+            pygame.draw.rect(self.screen, back_button_color, 
+                           (back_button_x, back_button_y, back_button_width, back_button_height))
+            
+            back_text = self.font_button.render(self.t('store.back'), True, WHITE)
+            self.screen.blit(back_text, (
+                back_button_x + (back_button_width - back_text.get_width()) // 2,
+                back_button_y + (back_button_height - back_text.get_height()) // 2
+            ))
+
+        def render_selected_powerup(powerup_id):
+            """Render powerup details panel."""
+            powerup_data = self.settings["powerups"][powerup_id]
+            info = powerup_info[powerup_id]
+            is_purchased = powerup_data['purchased']
+            cost = powerup_data['cost']
+
+            # Details panel position
+            details_x = screen_width - 320
+            details_y = 150
+
+            # Draw powerup icon
+            try:
+                icon = pygame.image.load(info['icon'])
+                icon = pygame.transform.scale(icon, (100, 100))
+                self.screen.blit(icon, (details_x + 110, details_y + 20))
+                
+                if is_purchased:
+                    frame = pygame.image.load('./assets/images/stats/stats-frame-1.png')
+                    frame = pygame.transform.scale(frame, (120, 120))
+                    self.screen.blit(frame, (details_x + 100, details_y + 10))
+            except (pygame.error, FileNotFoundError):
+                # Draw placeholder
+                pygame.draw.rect(self.screen, GRAY, (details_x + 110, details_y + 20, 100, 100))
+
+            # Display powerup information
+            text_center_x = details_x + 160
+
+            name_text = self.font_button.render(info['name'], True, WHITE)
+            self.screen.blit(name_text, (
+                text_center_x - name_text.get_width() // 2,
+                details_y + 140
+            ))
+
+            # Wrap description text
+            desc_words = info['description'].split()
+            lines = []
+            current_line = []
+            max_width = 280
+            
+            for word in desc_words:
+                test_line = ' '.join(current_line + [word])
+                test_surface = self.font_credit.render(test_line, True, WHITE)
+                if test_surface.get_width() <= max_width:
+                    current_line.append(word)
+                else:
+                    if current_line:
+                        lines.append(' '.join(current_line))
+                    current_line = [word]
+            if current_line:
+                lines.append(' '.join(current_line))
+
+            desc_y = details_y + 180
+            for line in lines:
+                line_surface = self.font_credit.render(line, True, WHITE)
+                self.screen.blit(line_surface, (
+                    text_center_x - line_surface.get_width() // 2,
+                    desc_y
+                ))
+                desc_y += 25
+
+            # Cost display
+            if not is_purchased:
+                cost_text = self.font_button.render(
+                    self.t('store.cost', cost=cost), True, YELLOW
+                )
+                self.screen.blit(cost_text, (
+                    text_center_x - cost_text.get_width() // 2,
+                    details_y + 300
+                ))
+
+            # Draw purchase/owned button
+            button_x = details_x + 60
+            button_y = details_y + 360
+            button_width, button_height = 200, 50
+
+            if is_purchased:
+                button_color = GREEN
+                button_text = self.t('store.owned')
+            else:
+                button_color = RED if self.settings['skill_points'] >= cost else GRAY
+                button_text = self.t('store.purchase')
+
+            pygame.draw.rect(self.screen, button_color, 
+                           (button_x, button_y, button_width, button_height))
+
+            text_surface = self.font_button.render(button_text, True, WHITE)
+            self.screen.blit(text_surface, (
+                button_x + (button_width - text_surface.get_width()) // 2,
+                button_y + (button_height - text_surface.get_height()) // 2
+            ))
+
+            return pygame.Rect(button_x, button_y, button_width, button_height)
+
+        render_screen()
+        pygame.display.flip()
+
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                    
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+                    # Check powerup node clicks
+                    for powerup_id, (x, y) in powerup_positions.items():
+                        if pygame.Rect(x - 40, y - 40, 80, 80).collidepoint(mouse_x, mouse_y):
+                            click_sound.play()
+                            selected_powerup = powerup_id
+                            render_screen()
+                            break
+
+                    # Check back button
+                    button_x = 20
+                    button_y = screen_height - 70
+                    if pygame.Rect(button_x, button_y, 150, 50).collidepoint(mouse_x, mouse_y):
+                        click_sound.play()
+                        running = False
+
+                    # Check purchase button
+                    if purchase_button and purchase_button.collidepoint(mouse_x, mouse_y):
+                        powerup_data = self.settings["powerups"][selected_powerup]
+                        
+                        if not powerup_data['purchased']:
+                            cost = powerup_data['cost']
+                            
+                            if self.settings['skill_points'] >= cost:
+                                skill_bought_sound.play()
+                                self.settings['skill_points'] -= cost
+                                powerup_data['purchased'] = True
+                                self.save_settings()
+                                render_screen()
+                            else:
+                                skill_failed_sound.play()
+                        else:
+                            # Already owned
                             skill_failed_sound.play()
 
             pygame.display.flip()

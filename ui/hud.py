@@ -15,12 +15,6 @@ class HUD:
         """Draw health hearts at bottom-left."""
         player.draw_health(screen)
         
-    def draw_score(self, screen, player):
-        """Draw score at top-left."""
-        if player.font_score:
-            score_text = player.font_score.render(self.t('hud.score', score=player.score), True, WHITE)
-            screen.blit(score_text, (20, 25))  # Top-left position
-        
     def draw_xp_bar(self, screen, player):
         """Draw XP bar at top-center."""
         player.draw_xp(screen)
@@ -32,7 +26,6 @@ class HUD:
     def draw_all(self, screen, player):
         """Draw all HUD elements."""
         self.draw_health(screen, player)
-        self.draw_score(screen, player)
         self.draw_xp_bar(screen, player)
         self.draw_abilities(screen, player)
         

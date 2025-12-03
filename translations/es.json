@@ -52,8 +52,20 @@
     },
     "store": {
         "title": "Tienda",
-        "coming_soon": "¡Próximamente!",
-        "back": "Volver"
+        "back": "Volver",
+        "cost": "Costo: {cost} PH",
+        "purchase": "Comprar",
+        "owned": "POSEÍDO",
+        "magnet_name": "Imán de XP",
+        "magnet_desc": "Atrae todo el XP del mapa hacia ti instantáneamente",
+        "heal_name": "Botiquín",
+        "heal_desc": "Restaura 50% de tu vida máxima",
+        "speed_name": "Impulso de Velocidad",
+        "speed_desc": "Aumenta velocidad de movimiento 50% por 10 segundos",
+        "rage_name": "Modo Furia",
+        "rage_desc": "Aumenta velocidad de ataque 50% por 10 segundos",
+        "bomb_name": "Bomba",
+        "bomb_desc": "Causa daño masivo a todos los enemigos en el mapa"
     },
     "level_up": {
         "title": "¡Subiste de Nivel!",

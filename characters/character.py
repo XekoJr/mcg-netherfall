@@ -9,6 +9,9 @@ class Character:
     """Base class for all playable characters."""
     
     def __init__(self, fonts=None):
+        # Import here to avoid circular dependency
+        from managers.game_manager import GameManager
+        
         # Position and movement - Random spawn within map boundaries
         self.size = 60
         margin = 100  # Keep player away from edges
@@ -22,11 +25,12 @@ class Character:
         self.max_health = 40
         self.base_health = 40
         
-        # Progression
+        # Progression - Uses GameManager config
         self.xp = 0
         self.level = 1
         self.current_xp = 0
-        self.xp_to_next_level = 75
+        self.xp_to_next_level = GameManager.XP_TO_LEVEL
+        self.xp_scaling = GameManager.XP_SCALING
         self.score = 0
         self.level_up_pending = False
         
@@ -123,7 +127,7 @@ class Character:
         while self.current_xp >= self.xp_to_next_level:
             self.current_xp -= self.xp_to_next_level
             self.level += 1
-            self.xp_to_next_level = round(self.xp_to_next_level * 1.2)
+            self.xp_to_next_level = round(self.xp_to_next_level * self.xp_scaling)
             self.level_up_pending = True
             return True
         return False

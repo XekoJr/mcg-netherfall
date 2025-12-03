@@ -217,13 +217,6 @@ class EnemyManager:
                 # Save achievements via save_settings
                 save_settings(achievements=achievements)
 
-            # Equip the Burning Ability
-            if not any(isinstance(a, BurningAbility) for a in player.abilities):
-                burning_ability = BurningAbility()
-                burning_ability.active = True
-                player.abilities.append(burning_ability)
-                ability_obtained_sound.play()
-        
         elif isinstance(enemy, Boss2Enemy):
             player.score += 200
             boss_death_sound.play()
@@ -237,13 +230,6 @@ class EnemyManager:
 
                 # Save achievements via save_settings
                 save_settings(achievements=achievements)
-
-            # Equip the Poison Ability
-            if not any(isinstance(a, PoisonAbility) for a in player.abilities):
-                poison_ability = PoisonAbility()
-                poison_ability.active = True
-                player.abilities.append(poison_ability)
-                ability_obtained_sound.play()
 
         # Handle other enemy-specific logic
         elif isinstance(enemy, BlobEnemy):

@@ -73,3 +73,6 @@ if __name__ == "__main__":
     
     # Start the game from the main menu
     menu.main_menu(current_player, current_enemy_manager, achievements)
+
+    pygame.quit()
+    sys.exit()
