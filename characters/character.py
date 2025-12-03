@@ -1,6 +1,7 @@
 import math
 import pygame
 import time
+import random
 from assets import *
 from abilities import HealingAbility, ShieldAbility, InvincibilityAbility, BurningAbility
 
@@ -8,10 +9,11 @@ class Character:
     """Base class for all playable characters."""
     
     def __init__(self, fonts=None):
-        # Position and movement
-        self.x = WIDTH // 2
-        self.y = HEIGHT // 2
+        # Position and movement - Random spawn within map boundaries
         self.size = 60
+        margin = 100  # Keep player away from edges
+        self.x = random.randint(margin, MAP_WIDTH - self.size - margin)
+        self.y = random.randint(margin, MAP_HEIGHT - self.size - margin)
         self.speed = 2
         self.base_speed = 2
         
