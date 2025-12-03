@@ -331,6 +331,13 @@ class Menu:
                         self.language_menu()
                         # Reload translations after language change
                         self._load_translations()
+                        # Recreate buttons with new translations
+                        play_button = Button(center_x, start_y, center_button_width, center_button_height, 
+                                            self.t('main_menu.play'), self.font_button)
+                        skill_button = Button(center_x, start_y + center_button_height + center_button_spacing, 
+                                             center_button_width, center_button_height, self.t('main_menu.skill_tree'), self.font_button)
+                        store_button = Button(center_x, start_y + (center_button_height + center_button_spacing) * 2,
+                                             center_button_width, center_button_height, self.t('main_menu.store'), self.font_button)
             
             pygame.display.flip()
 

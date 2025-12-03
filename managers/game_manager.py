@@ -12,8 +12,9 @@ class GameManager:
     def __init__(self, screen, menu):
         self.screen = screen
         self.menu = menu
-        self.hud = HUD()
-        self.minimap = Minimap(size=150, position="top-right")
+        self.hud = HUD(screen, Fonts.score, menu.t)
+        self.minimap = Minimap(screen, menu.t, size=150, position="top-right")
+        
         self.clock = pygame.time.Clock()
         self.frame_count = 0
 
@@ -56,6 +57,10 @@ class GameManager:
         self.menu.screen = self.screen
         self.menu.menu_background = self.menu.load_menu_background()
         self.menu.save_settings()
+        
+        # Update HUD and Minimap screen references
+        self.hud.screen = self.screen
+        self.minimap.screen = self.screen
 
     def update_player(self, player, camera_x, camera_y):
         """Update player movement and combat."""

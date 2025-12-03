@@ -1,10 +1,13 @@
 import pygame
-from assets import WIDTH, HEIGHT, MAP_WIDTH, MAP_HEIGHT, WHITE, BLACK, GREEN, RED, BLUE, YELLOW
+from assets import MAP_WIDTH, MAP_HEIGHT, WHITE, BLACK, GREEN, RED, BLUE, DARK_RED
 
 class Minimap:
-    """Displays a minimap in the corner of the screen."""
+    """Minimap display for world navigation."""
     
-    def __init__(self, size=150, position="top-right"):
+    def __init__(self, screen, translations_func, size=150, position="top-right"):
+        """Initialize the minimap."""
+        self.screen = screen
+        self.t = translations_func
         self.size = size
         self.position = position
         self.border_thickness = 2
@@ -47,6 +50,10 @@ class Minimap:
         
         # Draw border
         pygame.draw.rect(minimap_surface, WHITE, (0, 0, self.size, self.size), self.border_thickness)
+        
+        font = pygame.font.Font(None, 20)
+        title_text = font.render(self.t('minimap.title'), True, WHITE)
+        minimap_surface.blit(title_text, (5, 5))
         
         # Draw XP drops (small blue dots)
         for xp in xp_drops:

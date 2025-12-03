@@ -1,12 +1,14 @@
-"""HUD (Heads-Up Display) components."""
-
 import pygame
 from assets import WHITE, Fonts
 
 class HUD:
     """Manages all on-screen UI elements during gameplay."""
     
-    def __init__(self):
+    def __init__(self, screen, font, translations_func):
+        """Initialize the HUD."""
+        self.screen = screen
+        self.font = font
+        self.t = translations_func  # Translation function from Menu
         self.show_debug = False  # Toggle for debug hitboxes
         
     def draw_health(self, screen, player):
