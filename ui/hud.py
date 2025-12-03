@@ -16,7 +16,7 @@ class HUD:
     def draw_score(self, screen, player):
         """Draw score at top-left."""
         if player.font_score:
-            score_text = player.font_score.render(f"Score: {player.score}", True, WHITE)
+            score_text = player.font_score.render(self.t('hud.score', score=player.score), True, WHITE)
             screen.blit(score_text, (20, 25))  # Top-left position
         
     def draw_xp_bar(self, screen, player):

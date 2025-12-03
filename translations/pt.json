@@ -1,0 +1,87 @@
+{
+    "hud": {
+        "health": "HP: {current}/{max}",
+        "xp": "XP: {current}/{needed}",
+        "level": "Nível: {level}",
+        "score": "Pontos: {score}",
+        "wave": "Onda: {wave}",
+        "boss_active": "LUTA CONTRA CHEFE"
+    },
+    "minimap": {
+        "title": "Mapa"
+    },
+    "main_menu": {
+        "high_score": "Recorde: {score}",
+        "play": "Jogar",
+        "skill_tree": "Árvore de Habilidades",
+        "store": "Loja",
+        "scoreboard": "Placar",
+        "coming_soon": "Em Breve"
+    },
+    "pause_menu": {
+        "title": "Pausado",
+        "continue": "Continuar",
+        "main_menu": "Menu Principal"
+    },
+    "game_over": {
+        "title": "Fim de Jogo",
+        "final_score": "Pontuação Final: {score}",
+        "new_skill_points": "Novos Pontos de Habilidade: {points}",
+        "restart": "Reiniciar",
+        "main_menu": "Menu Principal"
+    },
+    "settings": {
+        "title": "Configurações",
+        "master_volume": "Volume Geral",
+        "music_volume": "Volume da Música",
+        "effects_volume": "Volume dos Efeitos",
+        "display_mode": "Modo de Exibição",
+        "resolution": "Resolução",
+        "windowed": "Janela",
+        "windowed_fullscreen": "Tela Cheia sem Borda",
+        "fullscreen": "Tela Cheia",
+        "back": "Voltar",
+        "reset": "Resetar"
+    },
+    "language": {
+        "title": "Selecionar Idioma",
+        "english": "English",
+        "portuguese": "Português",
+        "spanish": "Español",
+        "back": "Voltar"
+    },
+    "store": {
+        "title": "Loja",
+        "coming_soon": "Em Breve!",
+        "back": "Voltar"
+    },
+    "level_up": {
+        "title": "Subiu de Nível!",
+        "fire_rate": "Aumentar Taxa de Disparo em 20%",
+        "damage": "Aumentar Dano em 30%",
+        "health": "Restaurar 40 HP",
+        "max_health": "Aumentar Vida Máxima em 20",
+        "speed": "Aumentar Velocidade em 13%",
+        "crit_chance": "Aumentar Chance de Crítico em 5%"
+    },
+    "skill_tree": {
+        "skill_points": "PH: {points}",
+        "locked": "Bloqueado",
+        "level": "Nv {current}/{max}",
+        "cost": "PH: {cost}",
+        "upgrade": "Melhorar",
+        "maxed": "MÁXIMO",
+        "back": "Voltar",
+        "max_health": "Vida Máxima",
+        "speed": "Velocidade",
+        "heal": "Cura",
+        "damage": "Dano",
+        "fire_rate": "Taxa de Disparo",
+        "crit_damage": "Dano Crítico",
+        "crit_chance": "Chance Crítica",
+        "shield": "Escudo",
+        "burn_damage": "Dano de Queimadura",
+        "burn_duration": "Duração da Queimadura",
+        "invincibility": "Invencibilidade"
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "hud": {
+        "health": "HP: {current}/{max}",
+        "xp": "XP: {current}/{needed}",
+        "level": "Level: {level}",
+        "score": "Score: {score}",
+        "wave": "Wave: {wave}",
+        "boss_active": "BOSS FIGHT"
+    },
+    "minimap": {
+        "title": "Map"
+    },
+    "main_menu": {
+        "high_score": "High Score: {score}",
+        "play": "Play",
+        "skill_tree": "Skill Tree",
+        "store": "Store",
+        "scoreboard": "Scoreboard",
+        "coming_soon": "Coming Soon"
+    },
+    "pause_menu": {
+        "title": "Paused",
+        "continue": "Continue",
+        "main_menu": "Main Menu"
+    },
+    "game_over": {
+        "title": "Game Over",
+        "final_score": "Final Score: {score}",
+        "new_skill_points": "New Skill Points: {points}",
+        "restart": "Restart",
+        "main_menu": "Main Menu"
+    },
+    "settings": {
+        "title": "Settings",
+        "master_volume": "Master Volume",
+        "music_volume": "Music Volume",
+        "effects_volume": "Effects Volume",
+        "display_mode": "Display Mode",
+        "resolution": "Resolution",
+        "windowed": "Windowed",
+        "windowed_fullscreen": "Windowed Fullscreen",
+        "fullscreen": "Fullscreen",
+        "back": "Back",
+        "reset": "Reset"
+    },
+    "language": {
+        "title": "Select Language",
+        "english": "English",
+        "portuguese": "Português",
+        "spanish": "Español",
+        "back": "Back"
+    },
+    "store": {
+        "title": "Store",
+        "coming_soon": "Coming Soon!",
+        "back": "Back"
+    },
+    "level_up": {
+        "title": "Level Up!",
+        "fire_rate": "Increase Fire Rate by 20%",
+        "damage": "Increase Damage by 30%",
+        "health": "Restore 40 HP",
+        "max_health": "Increase Max Health by 20",
+        "speed": "Increase Speed by 13%",
+        "crit_chance": "Increase Crit Chance by 5%"
+    },
+    "skill_tree": {
+        "skill_points": "SP: {points}",
+        "locked": "Locked",
+        "level": "Lv {current}/{max}",
+        "cost": "SP: {cost}",
+        "upgrade": "Upgrade",
+        "maxed": "MAXED",
+        "back": "Back",
+        "max_health": "Max Health",
+        "speed": "Speed",
+        "heal": "Heal",
+        "damage": "Damage",
+        "fire_rate": "Fire Rate",
+        "crit_damage": "Crit Damage",
+        "crit_chance": "Crit Chance",
+        "shield": "Shield",
+        "burn_damage": "Burn Damage",
+        "burn_duration": "Burn Duration",
+        "invincibility": "Invincibility"
+    }
+}

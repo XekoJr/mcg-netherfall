@@ -42,6 +42,11 @@ class Menu:
         self.save_manager = SaveManager(save_file="save/save.dat")
         self.settings = self.save_manager.load()
         
+        # Load translations
+        self.translations = {}
+        self.current_language = self.settings.get("language", "en")
+        self._load_translations()
+        
         # Apply saved volume settings to all audio
         self._apply_volume_settings()
         
@@ -65,6 +70,41 @@ class Menu:
         # Callbacks set by main.py
         self.reset_game = None
         self.game_loop = None
+
+    def _load_translations(self):
+        """Load translation file for current language."""
+        lang_file = f"./translations/{self.current_language}.json"
+        try:
+            with open(lang_file, 'r', encoding='utf-8') as f:
+                self.translations = json.load(f)
+        except FileNotFoundError:
+            print(f"Translation file not found: {lang_file}, falling back to English")
+            try:
+                with open("./translations/en.json", 'r', encoding='utf-8') as f:
+                    self.translations = json.load(f)
+            except FileNotFoundError:
+                print("ERROR: English translation file not found!")
+                self.translations = {}
+
+    def t(self, key_path, **kwargs):
+        """
+        Get translated text by key path.
+        Supports variable substitution using kwargs.
+        """
+        keys = key_path.split('.')
+        value = self.translations
+        
+        for key in keys:
+            if isinstance(value, dict):
+                value = value.get(key, key_path)
+            else:
+                return key_path
+        
+        # Replace variables if any
+        if isinstance(value, str) and kwargs:
+            return value.format(**kwargs)
+        
+        return value
 
     def _apply_volume_settings(self):
         """Apply volume settings to all sounds and music based on master volume."""
@@ -149,7 +189,7 @@ class Menu:
         utility_button_color = (100, 0, 0)
         utility_button_hover = (70, 0, 0)
         
-        # Calculate centered button positions ONCE
+        # Calculate centered button positions
         center_button_width = 250
         center_button_height = 60
         center_button_spacing = 20
@@ -158,14 +198,15 @@ class Menu:
         center_x = (screen_width - center_button_width) // 2
         start_y = (screen_height - total_center_height) // 2
         
-        # Create main action buttons ONCE OUTSIDE LOOP ✅
-        play_button = Button(center_x, start_y, center_button_width, center_button_height, "Play", self.font_button)
+        # Create main action buttons with translations
+        play_button = Button(center_x, start_y, center_button_width, center_button_height, 
+                            self.t('main_menu.play'), self.font_button)
         skill_button = Button(center_x, start_y + center_button_height + center_button_spacing, 
-                             center_button_width, center_button_height, "Skill Tree", self.font_button)
+                             center_button_width, center_button_height, self.t('main_menu.skill_tree'), self.font_button)
         store_button = Button(center_x, start_y + (center_button_height + center_button_spacing) * 2,
-                             center_button_width, center_button_height, "Store", self.font_button)
+                             center_button_width, center_button_height, self.t('main_menu.store'), self.font_button)
         
-        # Create utility icon buttons ONCE OUTSIDE LOOP ✅
+        # Create utility icon buttons
         lang_button = IconButton(
             margin,
             screen_height - (button_size * 3) - (margin * 3),
@@ -204,10 +245,12 @@ class Menu:
             
             # Display high score in top-left
             if self.high_score > 0:
-                high_score_text = self.font_score.render(f"High Score: {self.high_score}", True, WHITE)
+                high_score_text = self.font_score.render(
+                    self.t('main_menu.high_score', score=self.high_score), True, WHITE
+                )
                 self.screen.blit(high_score_text, (20, 20))
             
-            # Update and draw center buttons (don't recreate them!)
+            # Update and draw center buttons
             play_button.update(mouse_pos)
             skill_button.update(mouse_pos)
             store_button.update(mouse_pos)
@@ -233,13 +276,13 @@ class Menu:
             
             Panel.draw(self.screen, scoreboard_x, scoreboard_y, scoreboard_width, scoreboard_height)
             
-            scoreboard_title = self.font_button.render("Scoreboard", True, WHITE)
+            scoreboard_title = self.font_button.render(self.t('main_menu.scoreboard'), True, WHITE)
             self.screen.blit(scoreboard_title, (
                 scoreboard_x + (scoreboard_width - scoreboard_title.get_width()) // 2,
                 scoreboard_y + 20
             ))
             
-            coming_soon_text = self.font_credit.render("Coming Soon", True, GRAY)
+            coming_soon_text = self.font_credit.render(self.t('main_menu.coming_soon'), True, GRAY)
             self.screen.blit(coming_soon_text, (
                 scoreboard_x + (scoreboard_width - coming_soon_text.get_width()) // 2,
                 scoreboard_y + scoreboard_height // 2
@@ -286,6 +329,8 @@ class Menu:
                     elif lang_button.is_clicked(mouse_pos):
                         click_sound.play()
                         self.language_menu()
+                        # Reload translations after language change
+                        self._load_translations()
             
             pygame.display.flip()
 
@@ -297,9 +342,11 @@ class Menu:
         button_width, button_height = 200, 50
         button_x = (screen_width - button_width) // 2
         
-        # Create pause menu buttons
-        continue_button = TextButton(button_x, 300, button_width, button_height, "Continue", self.font_button)
-        menu_button = TextButton(button_x, 400, button_width, button_height, "Main Menu", self.font_button)
+        # Create pause menu buttons with translations
+        continue_button = TextButton(button_x, 300, button_width, button_height, 
+                                     self.t('pause_menu.continue'), self.font_button)
+        menu_button = TextButton(button_x, 400, button_width, button_height, 
+                                self.t('pause_menu.main_menu'), self.font_button)
         
         while paused:
             mouse_pos = pygame.mouse.get_pos()
@@ -308,7 +355,7 @@ class Menu:
             self.pattern_background.draw(self.screen)
             
             # Draw title
-            title_text = self.font_title.render("Paused", True, WHITE)
+            title_text = self.font_title.render(self.t('pause_menu.title'), True, WHITE)
             self.screen.blit(title_text, ((screen_width - title_text.get_width()) // 2, 150))
             
             # Update and draw buttons
@@ -364,9 +411,11 @@ class Menu:
         button_width, button_height = 200, 50
         button_x = (screen_width - button_width) // 2
         
-        # Create game over buttons
-        restart_button = TextButton(button_x, screen_height // 2, button_width, button_height, "Restart", self.font_button)
-        menu_button = TextButton(button_x, screen_height // 2 + 70, button_width, button_height, "Main Menu", self.font_button)
+        # Create game over buttons with translations
+        restart_button = TextButton(button_x, screen_height // 2, button_width, button_height, 
+                                    self.t('game_over.restart'), self.font_button)
+        menu_button = TextButton(button_x, screen_height // 2 + 70, button_width, button_height, 
+                                self.t('game_over.main_menu'), self.font_button)
         
         while running:
             mouse_pos = pygame.mouse.get_pos()
@@ -375,9 +424,9 @@ class Menu:
             self.pattern_background.draw(self.screen)
             
             # Display game over text and stats
-            game_over_text = self.font_title.render("Game Over", True, WHITE)
-            score_text = self.font_score.render(f"Final Score: {score}", True, WHITE)
-            sp_text = self.font_score.render(f"New Skill Points: {new_skill_points}", True, WHITE)
+            game_over_text = self.font_title.render(self.t('game_over.title'), True, WHITE)
+            score_text = self.font_score.render(self.t('game_over.final_score', score=score), True, WHITE)
+            sp_text = self.font_score.render(self.t('game_over.new_skill_points', points=new_skill_points), True, WHITE)
             
             self.screen.blit(game_over_text, (screen_width // 2 - game_over_text.get_width() // 2, screen_height // 4))
             self.screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 4 + 80))
@@ -431,11 +480,11 @@ class Menu:
             (native_width, native_height)
         ])))
 
-        # Display mode options
+        # Display modes with translations
         display_modes = [
-            {"name": "Windowed", "fullscreen": False},
-            {"name": "Windowed Fullscreen", "fullscreen": True, "borderless": True},
-            {"name": "Fullscreen", "fullscreen": True, "borderless": False}
+            {"name": self.t('settings.windowed'), "fullscreen": False},
+            {"name": self.t('settings.windowed_fullscreen'), "fullscreen": True, "borderless": True},
+            {"name": self.t('settings.fullscreen'), "fullscreen": True, "borderless": False}
         ]
 
         # Get current resolution
@@ -465,8 +514,9 @@ class Menu:
             "effects_volume": Slider(0, 0, 300, 20, 0, 100, self.settings.get("effects_volume", 100)),
         }
 
-        back_button = TextButton(20, 0, 150, 50, "Back", self.font_button)
-        reset_button = TextButton(0, 0, 150, 50, "Reset", self.font_button)
+        # Create buttons with translations
+        back_button = TextButton(20, 0, 150, 50, self.t('settings.back'), self.font_button)
+        reset_button = TextButton(0, 0, 150, 50, self.t('settings.reset'), self.font_button)
 
         while running:
             # Draw pattern background
@@ -479,15 +529,14 @@ class Menu:
             reset_button.rect.x = self.screen.get_width() - 170
             reset_button.rect.y = self.screen.get_height() - 70
 
-            # Draw title
-            title_text = self.font_title.render("Settings", True, WHITE)
+            title_text = self.font_title.render(self.t('settings.title'), True, WHITE)
             self.screen.blit(title_text, ((self.screen.get_width() - title_text.get_width()) // 2, 30))
 
-            # Volume control section
+            # Volume sliders with translations
             slider_labels = [
-                ("Master Volume", "master_volume"),
-                ("Music Volume", "music_volume"),
-                ("Effects Volume", "effects_volume"),
+                (self.t('settings.master_volume'), "master_volume"),
+                (self.t('settings.music_volume'), "music_volume"),
+                (self.t('settings.effects_volume'), "effects_volume"),
             ]
 
             for i, (label_text, key) in enumerate(slider_labels):
@@ -514,7 +563,7 @@ class Menu:
 
             # Display mode selection
             mode_y = 380
-            mode_label = self.font_button.render("Display Mode", True, WHITE)
+            mode_label = self.font_button.render(self.t('settings.display_mode'), True, WHITE)
             self.screen.blit(mode_label, ((self.screen.get_width() - mode_label.get_width()) // 2, mode_y - 30))
 
             mode_text = self.font_button.render(display_modes[current_display_mode_index]["name"], True, WHITE)
@@ -532,10 +581,10 @@ class Menu:
             if current_display_mode_index < len(display_modes) - 1:
                 Arrow.draw_right(self.screen, right_mode_arrow_x, right_mode_arrow_y)
 
-            # Resolution selection (hidden in borderless windowed mode)
+            # Resolution selection
             if current_display_mode_index != 1:
                 res_y = 480
-                res_label = self.font_button.render("Resolution", True, WHITE)
+                res_label = self.font_button.render(self.t('settings.resolution'), True, WHITE)
                 self.screen.blit(res_label, ((self.screen.get_width() - res_label.get_width()) // 2, res_y - 30))
 
                 resolution_text = self.font_button.render(
@@ -639,9 +688,9 @@ class Menu:
         
         # Available languages
         languages = [
-            {"name": "English", "code": "en"},
-            {"name": "Português", "code": "pt"},
-            {"name": "Español", "code": "es"}
+            {"name": self.t('language.english'), "code": "en"},
+            {"name": self.t('language.portuguese'), "code": "pt"},
+            {"name": self.t('language.spanish'), "code": "es"}
         ]
         
         current_language = self.settings.get("language", "en")
@@ -653,7 +702,7 @@ class Menu:
         start_y = 150
         spacing = 20
         
-        # Create language buttons ONCE outside the loop
+        # Create language buttons
         lang_buttons = []
         for i, lang in enumerate(languages):
             button_y = start_y + i * (button_height + spacing)
@@ -668,17 +717,15 @@ class Menu:
                               hover_color=hover_color, normal_color=color)
             lang_buttons.append((button, lang))
         
-        # Create back button ONCE
-        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
+        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, 
+                                self.t('language.back'), self.font_button)
         
         while running:
-            # Draw pattern background
             self.pattern_background.draw(self.screen)
             
             mouse_pos = pygame.mouse.get_pos()
             
-            # Draw title
-            title_text = self.font_title.render("Select Language", True, WHITE)
+            title_text = self.font_title.render(self.t('language.title'), True, WHITE)
             self.screen.blit(title_text, ((self.screen.get_width() - title_text.get_width()) // 2, 50))
             
             # Update and draw language buttons
@@ -711,8 +758,10 @@ class Menu:
                         if button.is_clicked(mouse_pos):
                             click_sound.play()
                             self.settings["language"] = lang["code"]
+                            self.current_language = lang["code"]
                             self.save_settings()
                             current_language = lang["code"]
+                            self._load_translations()
         
             pygame.display.flip()
 
@@ -720,7 +769,8 @@ class Menu:
         """Store menu - placeholder for future implementation."""
         running = True
         
-        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, "Back", self.font_button)
+        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, 
+                                self.t('store.back'), self.font_button)
         
         while running:
             # Draw pattern background
@@ -728,12 +778,10 @@ class Menu:
             
             mouse_pos = pygame.mouse.get_pos()
             
-            # Draw title
-            title_text = self.font_title.render("Store", True, WHITE)
+            title_text = self.font_title.render(self.t('store.title'), True, WHITE)
             self.screen.blit(title_text, ((self.screen.get_width() - title_text.get_width()) // 2, 100))
             
-            # Coming soon message
-            coming_soon = self.font_button.render("Coming Soon!", True, WHITE)
+            coming_soon = self.font_button.render(self.t('store.coming_soon'), True, WHITE)
             self.screen.blit(coming_soon, ((self.screen.get_width() - coming_soon.get_width()) // 2, self.screen.get_height() // 2))
             
             # Update and draw back button
@@ -761,12 +809,12 @@ class Menu:
 
         # All possible upgrades
         all_upgrades = [
-            {"text": "Increase Fire Rate by 20%", "upgrade": "fire_rate"},
-            {"text": "Increase Damage by 30%", "upgrade": "damage"},
-            {"text": "Restore 40 HP", "upgrade": "health"},
-            {"text": "Increase Max Health by 20", "upgrade": "max_health"},
-            {"text": "Increase Speed by 13%", "upgrade": "speed"},
-            {"text": "Increase Crit Chance by 5%", "upgrade": "crit_chance"}
+            {"text": self.t('level_up.fire_rate'), "upgrade": "fire_rate"},
+            {"text": self.t('level_up.damage'), "upgrade": "damage"},
+            {"text": self.t('level_up.health'), "upgrade": "health"},
+            {"text": self.t('level_up.max_health'), "upgrade": "max_health"},
+            {"text": self.t('level_up.speed'), "upgrade": "speed"},
+            {"text": self.t('level_up.crit_chance'), "upgrade": "crit_chance"}
         ]
 
         # Randomly select 3 upgrades
@@ -775,14 +823,12 @@ class Menu:
         hovered_button = None
 
         while running:
-            # Draw pattern background
             self.pattern_background.draw(self.screen)
 
             screen_width = self.screen.get_width()
             screen_height = self.screen.get_height()
 
-            # Draw title
-            title_text = self.font_title.render("Level Up!", True, WHITE)
+            title_text = self.font_title.render(self.t('level_up.title'), True, WHITE)
             screen.blit(title_text, (
                 screen_width // 2 - title_text.get_width() // 2, 
                 screen_height // 4 - 50
@@ -891,11 +937,11 @@ class Menu:
             
             mouse_x, mouse_y = pygame.mouse.get_pos()
 
-            # Display available skill points
-            sp_text = self.font_score.render(f"SP: {self.settings['skill_points']}", True, WHITE)
+            sp_text = self.font_score.render(
+                self.t('skill_tree.skill_points', points=self.settings['skill_points']), True, WHITE
+            )
             self.screen.blit(sp_text, (20, 20))
 
-            # Draw connection lines between skills
             for start, end in connections:
                 pygame.draw.line(
                     self.screen, WHITE, skill_positions[start], skill_positions[end], 2
@@ -965,7 +1011,7 @@ class Menu:
                         back_button_y < mouse_y < back_button_y + back_button_height
             back_button_color = DARK_RED if back_hovered else RED
             pygame.draw.rect(self.screen, back_button_color, (back_button_x, back_button_y, back_button_width, back_button_height))
-            back_text = self.font_button.render("Back", True, WHITE)
+            back_text = self.font_button.render(self.t('skill_tree.back'), True, WHITE)
             self.screen.blit(back_text, (
                 back_button_x + (back_button_width - back_text.get_width()) // 2,
                 back_button_y + (back_button_height - back_text.get_height()) // 2
@@ -985,7 +1031,8 @@ class Menu:
             for prereq_skill, prereq_level in requirements:
                 prereq_data = self.settings["skills"].get(prereq_skill)
                 if not prereq_data or prereq_data["level"] < prereq_level:
-                    unmet_requirements.append(f"{prereq_skill.replace('_', ' ').title()} Lv {prereq_level}")
+                    translated_skill = self.t(f'skill_tree.{prereq_skill}')
+                    unmet_requirements.append(f"{translated_skill} Lv {prereq_level}")
                     can_unlock = False
 
             achievement_required = skill_data.get("achievement_required")
@@ -1001,7 +1048,7 @@ class Menu:
                     icon_center_x = details_x + 10 + (120 // 2)
                     self.screen.blit(lock_icon, (details_x + 20, details_y + 50))
 
-                    name_text = self.font_button.render("Locked", True, WHITE)
+                    name_text = self.font_button.render(self.t('skill_tree.locked'), True, WHITE)
                     self.screen.blit(name_text, (icon_center_x - name_text.get_width() // 2, details_y + 200))
 
                     for idx, req in enumerate(unmet_requirements):
@@ -1036,13 +1083,18 @@ class Menu:
 
             # Display skill information
             effect = skill_data["effect"]
-            cost = skill_data["costs"][level] if level < max_level else "MAX"
+            cost = skill_data["costs"][level] if level < max_level else self.t('skill_tree.maxed')
 
-            name_text = self.font_button.render(skill_name.replace("_", " ").title() + f" {level}/{max_level}", True, WHITE)
-            cost_text = self.font_button.render(f"SP: {cost}", True, WHITE)
+            translated_name = self.t(f'skill_tree.{skill_name}')
+            name_text = self.font_button.render(
+                f"{translated_name} {level}/{max_level}", True, WHITE
+            )
+            cost_text = self.font_button.render(
+                self.t('skill_tree.cost', cost=cost) if level < max_level else cost, True, WHITE
+            )
             effect_text = self.font_button.render(f"{effect}", True, WHITE)
 
-            text_center_x = details_x + 10 + (120 // 2);
+            text_center_x = details_x + 10 + (120 // 2)
 
             self.screen.blit(name_text, (text_center_x - name_text.get_width() // 2, details_y + 200))
             self.screen.blit(cost_text, (text_center_x - cost_text.get_width() // 2, details_y + 240))
@@ -1053,7 +1105,7 @@ class Menu:
             button_y = details_y + 380
             button_width, button_height = 200, 50
 
-            button_text = "Upgrade" if level < max_level else "MAXED"
+            button_text = self.t('skill_tree.upgrade') if level < max_level else self.t('skill_tree.maxed')
 
             pygame.draw.rect(self.screen, RED if level < max_level else GRAY, (button_x, button_y, button_width, button_height))
 
