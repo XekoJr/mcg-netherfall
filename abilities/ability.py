@@ -5,7 +5,6 @@ class Ability:
     Base class for all abilities.
     
     Abilities can be passive (always on) or active (triggered).
-    Each ability has a name, description, cost to unlock, and an icon.
     """
     def __init__(self, name, description, cost, icon_path=None, images=None, active=False):
         self.name = name  
@@ -13,7 +12,7 @@ class Ability:
         self.cost = cost  # Skill points to unlock
         self.icon_path = icon_path  
         self.images = images if images else []  # Animation frames
-        self.active = active  # Is it currently active?
+        self.active = active  # Is active?
 
     def draw_icon(self, screen, x, y, size=35):
         """Draw the ability icon."""

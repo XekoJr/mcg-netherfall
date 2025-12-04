@@ -38,10 +38,3 @@ class PoisonAbility(Ability):
             del enemy.poison_end_time
             del enemy.next_poison_tick
         return False
-
-    """
-    def update_attributes(self, poison_damage_level, poison_duration_level):
-        # Upgrade poison stats based on skill levels
-        self.poison_damage = self.base_poison_damage + (0.2 * poison_damage_level)
-        self.poison_duration = self.base_poison_duration + (1 * poison_duration_level)
-    """
