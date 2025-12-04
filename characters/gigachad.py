@@ -6,8 +6,8 @@ from assets import *
 class Gigachad(Character):
     """Melee character that deals AOE damage around them."""
     
-    def __init__(self, fonts=None):
-        super().__init__(fonts)
+    def __init__(self, fonts=None, tile_manager=None):
+        super().__init__(fonts, tile_manager)
         
         # Gigachad stats - tankier but slower
         self.health = 60

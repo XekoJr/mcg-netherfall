@@ -8,6 +8,7 @@ from abilities import *
 from ui import HUD, Minimap, draw_debug_hitboxes
 from characters import Gigachad, Ranger
 from managers.powerup_manager import PowerupManager
+from tiles import TileManager
 
 class GameManager:
     # ===== CONFIGURATION SETTINGS =====
@@ -55,10 +56,14 @@ class GameManager:
         self.screen = screen
         self.menu = menu
         self.hud = HUD(screen, Fonts.score, menu.t)
-        self.minimap = Minimap(screen, menu.t, size=150, position="top-right")
+        self.minimap = Minimap(screen, menu.t, position="top-right")  # Size auto-calculated from screen
         
         self.clock = pygame.time.Clock()
         self.frame_count = 0
+        
+        # Initialize tile manager for map generation (5x5 tilesets, each 30x30 tiles = 150x150 tiles total)
+        self.tile_manager = TileManager(150, 150, tile_size=20)
+        self.tile_manager.generate_map()
         
         # Timer system - Uses config values
         self.round_duration = self.ROUND_DURATION
@@ -183,7 +188,7 @@ class GameManager:
             else:  # Right
                 x, y = MAP_WIDTH, random.randint(0, MAP_HEIGHT - 60)
             
-            enemy = enemy_type(x, y)
+            enemy = enemy_type(x, y, tile_manager=self.tile_manager)
             
             # Scale health based on round
             health_multiplier = 1.0
@@ -199,16 +204,19 @@ class GameManager:
 
     def spawn_boss(self, enemy_manager):
         """Spawn the appropriate boss for the current round."""
+        # Use boss spawn position from tile manager
+        boss_x, boss_y = self.tile_manager.boss_spawn_position
+        
         if self.current_round == 1:
-            boss = Boss1Enemy(MAP_WIDTH // 2, MAP_HEIGHT // 2)
+            boss = Boss1Enemy(boss_x, boss_y, tile_manager=self.tile_manager)
         elif self.current_round == 2:
-            boss = Boss2Enemy(MAP_WIDTH // 2, MAP_HEIGHT // 2)
+            boss = Boss2Enemy(boss_x, boss_y, tile_manager=self.tile_manager)
         else:
             # Endless mode: Alternate between bosses with scaling health
             if self.current_round % 2 == 1:
-                boss = Boss1Enemy(MAP_WIDTH // 2, MAP_HEIGHT // 2)
+                boss = Boss1Enemy(boss_x, boss_y, tile_manager=self.tile_manager)
             else:
-                boss = Boss2Enemy(MAP_WIDTH // 2, MAP_HEIGHT // 2)
+                boss = Boss2Enemy(boss_x, boss_y, tile_manager=self.tile_manager)
             
             # Scale boss health for endless mode
             health_multiplier = 1.0 + (self.current_round - 2) * self.BOSS_HEALTH_SCALING
@@ -251,6 +259,8 @@ class GameManager:
                         return True
                 if event.key == pygame.K_F3:
                     self.hud.toggle_debug()
+                    # Also toggle prop hitboxes with F3
+                    self.tile_manager.toggle_hitboxes()
                 if event.key == pygame.K_F11:
                     self._toggle_fullscreen()
         return False
@@ -318,7 +328,7 @@ class GameManager:
             else:
                 x, y = MAP_WIDTH, random.randint(0, MAP_HEIGHT - 60)
             
-            enemy = enemy_type(x, y)
+            enemy = enemy_type(x, y, tile_manager=self.tile_manager)
             
             # Scale health based on round
             health_multiplier = 1.0
@@ -414,10 +424,8 @@ class GameManager:
 
     def draw_game(self, screen, player, camera_x, camera_y, enemy_manager):
         """Draw all game elements."""
-        background_x = -camera_x
-        background_y = -camera_y
-
-        screen.blit(background_image, (background_x, background_y))
+        # Render tile-based map instead of background image
+        self.tile_manager.render(screen, (camera_x, camera_y))
 
         player.draw_with_offset(screen, camera_x, camera_y)
         draw_projectiles(screen, camera_x, camera_y)
@@ -484,6 +492,7 @@ class GameManager:
                     if enemy.take_damage(player.attack_damage):
                         score_gained = self.handle_enemy_defeat_score(enemy)
                         player.score += score_gained
+                        self.kills += 1  # Increment kill counter
                         enemy_manager.handle_enemy_defeat(
                             enemy, player, xp_drops, 
                             self.achievements, self.menu.save_settings
@@ -511,13 +520,16 @@ class GameManager:
         }
         self.powerup_manager.try_drop_powerup(enemy.x, enemy.y, purchased_powerups)
         
-        return self.add_kill(base_score)
+        return self.calculate_score(base_score)
 
     def run_game_loop(self, player, enemy_manager, achievements):
         """Main game loop."""
         self.frame_count = 0
         self.achievements = achievements
         boss_projectiles.clear()
+        
+        # Set tile_manager reference on player for collision detection
+        player.tile_manager = self.tile_manager
         
         # Initialize timer and scoring
         self.round_start_time = pygame.time.get_ticks()
@@ -575,7 +587,7 @@ class GameManager:
             
             enemy_manager.update_enemies(player.x, player.y, player, self.screen, camera_x, camera_y)
 
-            move_projectiles()
+            move_projectiles(tile_manager=self.tile_manager)
             move_boss_projectiles()
 
             for enemy in enemy_manager.enemies:
@@ -595,6 +607,7 @@ class GameManager:
                 if enemy.is_dead():
                     score_gained = self.handle_enemy_defeat_score(enemy)
                     player.score += score_gained
+                    self.kills += 1  # Increment kill counter
                     enemy_manager.handle_enemy_defeat(enemy, player, xp_drops, achievements, self.menu.save_settings)
 
             # Check if boss was defeated

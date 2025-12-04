@@ -8,9 +8,12 @@ from abilities import HealingAbility, ShieldAbility, InvincibilityAbility, Burni
 class Character:
     """Base class for all playable characters."""
     
-    def __init__(self, fonts=None):
+    def __init__(self, fonts=None, tile_manager=None):
         # Import here to avoid circular dependency
         from managers.game_manager import GameManager
+        
+        # Reference to tile manager for collision detection
+        self.tile_manager = tile_manager
         
         # Position and movement - Random spawn within map boundaries
         self.size = 60
@@ -102,9 +105,53 @@ class Character:
             dx = (dx / magnitude) * self.speed
             dy = (dy / magnitude) * self.speed
 
-        # Apply movement with map boundaries
-        self.x = max(0, min(MAP_WIDTH - self.size, self.x + dx))
-        self.y = max(0, min(MAP_HEIGHT - self.size, self.y + dy))
+        # Calculate new position
+        new_x = self.x + dx
+        new_y = self.y + dy
+        
+        # Apply map boundaries
+        new_x = max(0, min(MAP_WIDTH - self.size, new_x))
+        new_y = max(0, min(MAP_HEIGHT - self.size, new_y))
+        
+        # Check collision with props if tile_manager available
+        if self.tile_manager:
+            new_rect = pygame.Rect(
+                new_x + self.hitbox_offset[0],
+                new_y + self.hitbox_offset[1],
+                self.hitbox_size[0],
+                self.hitbox_size[1]
+            )
+            
+            # Try moving to new position
+            if not self.tile_manager.check_collision(new_rect, "player"):
+                # No collision, apply full movement
+                self.x = new_x
+                self.y = new_y
+            else:
+                # Collision detected, try sliding along X axis only
+                x_only_rect = pygame.Rect(
+                    new_x + self.hitbox_offset[0],
+                    self.y + self.hitbox_offset[1],
+                    self.hitbox_size[0],
+                    self.hitbox_size[1]
+                )
+                if not self.tile_manager.check_collision(x_only_rect, "player"):
+                    self.x = new_x
+                else:
+                    # Try sliding along Y axis only
+                    y_only_rect = pygame.Rect(
+                        self.x + self.hitbox_offset[0],
+                        new_y + self.hitbox_offset[1],
+                        self.hitbox_size[0],
+                        self.hitbox_size[1]
+                    )
+                    if not self.tile_manager.check_collision(y_only_rect, "player"):
+                        self.y = new_y
+                    # else: fully blocked, don't move
+        else:
+            # No tile manager, just apply movement
+            self.x = new_x
+            self.y = new_y
 
         # Update animation
         if moving:

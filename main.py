@@ -29,7 +29,7 @@ menu = Menu(screen, Fonts.title, Fonts.button, Fonts.credit, Fonts.score)
 current_player = None
 current_enemy_manager = None
 
-def reset_game(achievements=None, character_type="ranger"):
+def reset_game(achievements=None, character_type="ranger", tile_manager=None):
     """Reset game with selected character."""
     global current_player, current_enemy_manager
     projectiles.clear()
@@ -47,9 +47,9 @@ def reset_game(achievements=None, character_type="ranger"):
     
     # Create character based on type
     if character_type == "gigachad":
-        current_player = Gigachad(fonts=fonts)
+        current_player = Gigachad(fonts=fonts, tile_manager=tile_manager)
     else:  # Default to ranger
-        current_player = Ranger(fonts=fonts)
+        current_player = Ranger(fonts=fonts, tile_manager=tile_manager)
     
     skills = settings.get("skills", {})
     current_player.initialize_abilities(skills)

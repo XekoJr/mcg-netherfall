@@ -4,7 +4,7 @@ import math
 
 class Enemy:
     """Base class for all enemies."""
-    def __init__(self, x, y, hp, speed, xp_value, damage, size, images):
+    def __init__(self, x, y, hp, speed, xp_value, damage, size, images, tile_manager=None):
         self.x = x
         self.y = y
         self.hp = hp
@@ -17,6 +17,7 @@ class Enemy:
         self.current_image_index = 0
         self.animation_counter = 0
         self.animation_speed = 10
+        self.tile_manager = tile_manager
 
     def move_toward_player(self, player_x, player_y):
         """Move the enemy toward the player."""
@@ -26,8 +27,34 @@ class Enemy:
         if distance > 0:
             dx /= distance
             dy /= distance
-        self.x += dx * self.speed
-        self.y += dy * self.speed
+        
+        # Calculate new position
+        new_x = self.x + dx * self.speed
+        new_y = self.y + dy * self.speed
+        
+        # Check collision with props if tile_manager available (with sliding)
+        if self.tile_manager:
+            # Try moving to new position
+            new_rect = pygame.Rect(new_x, new_y, self.size[0], self.size[1])
+            if not self.tile_manager.check_collision(new_rect, "enemy"):
+                # No collision, apply full movement
+                self.x = new_x
+                self.y = new_y
+            else:
+                # Collision detected, try sliding along X axis only
+                x_only_rect = pygame.Rect(new_x, self.y, self.size[0], self.size[1])
+                if not self.tile_manager.check_collision(x_only_rect, "enemy"):
+                    self.x = new_x
+                else:
+                    # Try sliding along Y axis only
+                    y_only_rect = pygame.Rect(self.x, new_y, self.size[0], self.size[1])
+                    if not self.tile_manager.check_collision(y_only_rect, "enemy"):
+                        self.y = new_y
+                    # else: fully blocked, don't move
+        else:
+            # No tile manager, just apply movement
+            self.x = new_x
+            self.y = new_y
 
     def take_damage(self, damage):
         """Reduce health and return True if the enemy dies."""

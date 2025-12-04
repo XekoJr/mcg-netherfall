@@ -2,8 +2,8 @@ import pygame
 
 # SCREEN & MAP CONSTANTS
 WIDTH, HEIGHT = 1366, 768
-MAP_WIDTH = 3000
-MAP_HEIGHT = 3000
+MAP_WIDTH = 3000  # 150 tiles * 20 pixels
+MAP_HEIGHT = 3000  # 150 tiles * 20 pixels
 
 # COLORS
 WHITE = (255, 255, 255)
@@ -41,6 +41,89 @@ except pygame.error as e:
     print(f"Error loading background image: {e}")
     background_image = pygame.Surface((WIDTH, HEIGHT))
     background_image.fill((50, 50, 50))
+
+# TILESET BACKGROUND IMAGES (should be 600x600 pixels = 30x30 tiles at 20px each)
+# Note: If your source images are 300x300, they will be scaled to 600x600
+TILESET_BACKGROUNDS = {}
+print("\n=== LOADING TILESET BACKGROUNDS ===")
+try:
+    # Load and scale tileset backgrounds to 600x600 pixels
+    bg_1 = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-1.png')
+    TILESET_BACKGROUNDS["bg-1"] = pygame.transform.scale(bg_1, (600, 600))
+    print("  ✓ bg-1 loaded and scaled to 600x600")
+    
+    bg_2 = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-2.png')
+    TILESET_BACKGROUNDS["bg-2"] = pygame.transform.scale(bg_2, (600, 600))
+    print("  ✓ bg-2 loaded and scaled to 600x600")
+    
+    bg_cross = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-cross.png')
+    TILESET_BACKGROUNDS["bg-cross"] = pygame.transform.scale(bg_cross, (600, 600))
+    print("  ✓ bg-cross loaded and scaled to 600x600")
+    
+    bg_path_h = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-path-horizontal.png')
+    TILESET_BACKGROUNDS["bg-path-horizontal"] = pygame.transform.scale(bg_path_h, (600, 600))
+    print("  ✓ bg-path-horizontal loaded and scaled to 600x600")
+    
+    bg_path_v = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-path-vertical.png')
+    TILESET_BACKGROUNDS["bg-path-vertical"] = pygame.transform.scale(bg_path_v, (600, 600))
+    print("  ✓ bg-path-vertical loaded and scaled to 600x600")
+    
+    print(f"Total tileset backgrounds loaded: {len(TILESET_BACKGROUNDS)}")
+except pygame.error as e:
+    print(f"✗ ERROR loading tileset backgrounds: {e}")
+
+# PROP IMAGES (decorative objects)
+PROP_IMAGES = {}
+print("\n=== LOADING PROP IMAGES ===")
+try:
+    # Bushes (1x1 tile = 20x20 pixels)
+    PROP_IMAGES["bush-1"] = pygame.image.load('./assets/images/textures/bushes/bush-1.png')
+    PROP_IMAGES["bush-2"] = pygame.image.load('./assets/images/textures/bushes/bush-2.png')
+    PROP_IMAGES["bush-3"] = pygame.image.load('./assets/images/textures/bushes/bush-3.png')
+    PROP_IMAGES["bush-4"] = pygame.image.load('./assets/images/textures/bushes/bush-4.png')
+    
+    # Rocks (1x1 tile = 20x20 pixels)
+    PROP_IMAGES["rock-1"] = pygame.image.load('./assets/images/textures/rocks/rock-1.png')
+    PROP_IMAGES["rock-2"] = pygame.image.load('./assets/images/textures/rocks/rock-2.png')
+    PROP_IMAGES["rock-3"] = pygame.image.load('./assets/images/textures/rocks/rock-3.png')
+    
+    # Big rocks (2x2 tiles = 40x40 pixels)
+    PROP_IMAGES["big-rock-1"] = pygame.image.load('./assets/images/textures/rocks/big-rock-1.png')
+    PROP_IMAGES["big-rock-2"] = pygame.image.load('./assets/images/textures/rocks/big-rock-2.png')
+    
+    # Square props (1x1 or 2x2 tiles)
+    PROP_IMAGES["barrel-1"] = pygame.image.load('./assets/images/textures/square-props/barrel-1.png')
+    PROP_IMAGES["box-1"] = pygame.image.load('./assets/images/textures/square-props/box-1.png')
+    PROP_IMAGES["box-2"] = pygame.image.load('./assets/images/textures/square-props/box-2.png')
+    PROP_IMAGES["vase-1"] = pygame.image.load('./assets/images/textures/square-props/vase-1.png')
+    PROP_IMAGES["vase-2"] = pygame.image.load('./assets/images/textures/square-props/vase-2.png')
+    PROP_IMAGES["chest-close"] = pygame.image.load('./assets/images/textures/square-props/chest-close.png')
+    PROP_IMAGES["chest-open"] = pygame.image.load('./assets/images/textures/square-props/chest-open.png')
+    PROP_IMAGES["stone-rip-1"] = pygame.image.load('./assets/images/textures/square-props/stone-rip-1.png')
+    PROP_IMAGES["stone-rip-2"] = pygame.image.load('./assets/images/textures/square-props/stone-rip-2.png')
+    PROP_IMAGES["stone-text"] = pygame.image.load('./assets/images/textures/square-props/stone-text.png')
+    
+    # Big props (2x2 tiles = 40x40 pixels)
+    PROP_IMAGES["big-well"] = pygame.image.load('./assets/images/textures/square-props/big-well.png')
+    PROP_IMAGES["big-spawnner"] = pygame.image.load('./assets/images/textures/square-props/big-spawnner.png')  # Non-collidable
+    
+    # Horizontal props (2x3 tiles = 40x60 pixels)
+    PROP_IMAGES["bench-h"] = pygame.image.load('./assets/images/textures/horizontal-props/bench.png')
+    PROP_IMAGES["coffin-h"] = pygame.image.load('./assets/images/textures/horizontal-props/coffin.png')
+    
+    # Vertical props (3x2 tiles = 60x40 pixels)
+    PROP_IMAGES["bench-v-1"] = pygame.image.load('./assets/images/textures/vertical-props/bench-1.png')
+    PROP_IMAGES["bench-v-2"] = pygame.image.load('./assets/images/textures/vertical-props/bench-2.png')
+    PROP_IMAGES["coffin-v"] = pygame.image.load('./assets/images/textures/vertical-props/coffin.png')
+    PROP_IMAGES["pillar-1"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-1.png')
+    PROP_IMAGES["pillar-2"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-2.png')
+    PROP_IMAGES["pillar-3"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-3.png')
+    PROP_IMAGES["statue"] = pygame.image.load('./assets/images/textures/vertical-props/statue.png')
+    
+    print(f"Total prop images loaded: {len(PROP_IMAGES)}")
+    print("=== PROP IMAGES COMPLETE ===\n")
+except pygame.error as e:
+    print(f"✗ ERROR loading prop images: {e}")
 
 # AUDIO
 pygame.mixer.init()

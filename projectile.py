@@ -60,11 +60,18 @@ def fire_projectile(player, camera_x, camera_y):
         'angle': angle  # Store the angle for rotation
     })
 
-def move_projectiles():
+def move_projectiles(tile_manager=None):
     """Update the position of all projectiles."""
     for projectile in projectiles[:]:
         projectile['x'] += projectile['dx'] * PROJECTILE_SPEED
         projectile['y'] += projectile['dy'] * PROJECTILE_SPEED  # Move y
+
+        # Check collision with props if tile_manager provided
+        if tile_manager:
+            proj_rect = pygame.Rect(projectile['x'] - 5, projectile['y'] - 5, 10, 10)
+            if tile_manager.check_collision(proj_rect, "projectile"):
+                projectiles.remove(projectile)
+                continue
 
         # Remove projectiles that go out of map boundaries
         if (projectile['x'] < 0 or projectile['x'] > MAP_WIDTH or

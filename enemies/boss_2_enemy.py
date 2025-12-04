@@ -6,11 +6,12 @@ from enemies.skeleton_enemy import SkeletonEnemy
 
 class Boss2Enemy(Enemy):
     """Boss that spawns skeleton enemies and maintains a radius around the player."""
-    def __init__(self, x, y, spawn_radius=200, num_skeletons=3, skeleton_cooldown=280):
+    def __init__(self, x, y, spawn_radius=200, num_skeletons=3, skeleton_cooldown=280, tile_manager=None):
         images = [
             pygame.image.load(f'./assets/images/enemies/boss_2/{i}.png') for i in range(56)
         ]
-        super().__init__(x, y, hp=1000, speed=2, xp_value=200, damage=20, size=(150, 150), images=images)
+        super().__init__(x, y, hp=1000, speed=2, xp_value=200, damage=20, size=(150, 150), images=images, tile_manager=tile_manager)
+        self.tile_manager = tile_manager
         self.spawn_radius = spawn_radius
         self.num_skeletons = num_skeletons
         self.skeleton_cooldown = skeleton_cooldown
@@ -62,7 +63,7 @@ class Boss2Enemy(Enemy):
                 angle = random.uniform(0, 360)
                 offset_x = self.spawn_radius * random.uniform(0.8, 1.2) * math.cos(math.radians(angle))
                 offset_y = self.spawn_radius * random.uniform(0.8, 1.2) * math.sin(math.radians(angle))
-                skeleton = SkeletonEnemy(self.x + offset_x, self.y + offset_y)
+                skeleton = SkeletonEnemy(self.x + offset_x, self.y + offset_y, tile_manager=self.tile_manager)
                 enemy_manager.add_enemy(skeleton)
             self.cooldown_timer = self.skeleton_cooldown
         else:

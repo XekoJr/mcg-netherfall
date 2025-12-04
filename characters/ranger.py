@@ -6,8 +6,8 @@ from projectile import fire_projectile
 class Ranger(Character):
     """Ranged character that shoots projectiles."""
     
-    def __init__(self, fonts=None):
-        super().__init__(fonts)
+    def __init__(self, fonts=None, tile_manager=None):
+        super().__init__(fonts, tile_manager)
         
         # Combat stats
         self.fire_rate = 1200

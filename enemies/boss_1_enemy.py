@@ -6,11 +6,11 @@ from projectile import boss_projectiles, boss_projectile_frames
 
 class Boss1Enemy(Enemy):
     """Boss enemy with unique behaviors."""
-    def __init__(self, x, y):
+    def __init__(self, x, y, tile_manager=None):
         images = [
             pygame.image.load(f'./assets/images/enemies/boss_1/{i}.png') for i in range(26)
         ]
-        super().__init__(x, y, hp=500, speed=1, xp_value=30, damage=40, size=(150, 150), images=images)
+        super().__init__(x, y, hp=500, speed=1, xp_value=30, damage=40, size=(150, 150), images=images, tile_manager=tile_manager)
         self.shoot_interval = 2200  # Default interval between shots
         self.default_shoot_interval = 2200  # Save default interval for resetting
         self.first_shot_delay = 1500
