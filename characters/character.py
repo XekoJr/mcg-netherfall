@@ -9,10 +9,8 @@ class Character:
     """Base class for all playable characters."""
     
     def __init__(self, fonts=None, tile_manager=None):
-        # Import here to avoid circular dependency
-        from managers.game_manager import GameManager
+        from managers.game_manager import GameManager # Avoid circular import
         
-        # Reference to tile manager for collision detection
         self.tile_manager = tile_manager
         
         # Position and movement - Random spawn within map boundaries
@@ -28,7 +26,7 @@ class Character:
         self.max_health = 40
         self.base_health = 40
         
-        # Progression - Uses GameManager config
+        # Progression
         self.xp = 0
         self.level = 1
         self.current_xp = 0
@@ -113,7 +111,7 @@ class Character:
         new_x = max(0, min(MAP_WIDTH - self.size, new_x))
         new_y = max(0, min(MAP_HEIGHT - self.size, new_y))
         
-        # Check collision with props if tile_manager available
+        # Check collision with props
         if self.tile_manager:
             new_rect = pygame.Rect(
                 new_x + self.hitbox_offset[0],
@@ -164,7 +162,7 @@ class Character:
 
     def attack(self, camera_x, camera_y):
         """Override this in child classes for different attack types."""
-        raise NotImplementedError("Each character must implement their own attack method")
+        # Each character must implement their own attack method
 
     def gain_xp(self, amount):
         """Add XP and handle leveling."""
@@ -303,12 +301,11 @@ class Character:
 
         if "speed" in skills:
             level = skills["speed"].get("level", 0)
-            self.speed = self.base_speed + (0.2 * level)  # Example: +0.2 speed per level
+            self.speed = self.base_speed + (0.2 * level)
 
-        # Add other stats similarly
         if "damage" in skills:
             level = skills["damage"].get("level", 0)
-            self.projectile_damage = self.base_projectile_damage + (2 * level)  # Example: +2 damage per level
+            self.projectile_damage = self.base_projectile_damage + (2 * level)
 
         if "fire_rate" in skills:
             level = skills["fire_rate"].get("level", 0)

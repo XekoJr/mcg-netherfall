@@ -4,7 +4,7 @@ from characters.character import Character
 from assets import *
 
 class Gigachad(Character):
-    """Melee character that deals AOE damage around them."""
+    """Melee character that deals AOE damage around them.""" # TO DO if theres time
     
     def __init__(self, fonts=None, tile_manager=None):
         super().__init__(fonts, tile_manager)
