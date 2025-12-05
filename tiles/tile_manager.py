@@ -43,12 +43,11 @@ class TileManager:
                 if self.tileset_occupancy[slot_y][slot_x]:
                     continue
                 
-                if random.random() < 0.8:
-                    tileset = random.choice(REGULAR_TILESETS)
-                    start_x = slot_x * 30
-                    start_y = slot_y * 30
-                    self._place_tileset(tileset, start_x, start_y)
-                    self.tileset_occupancy[slot_y][slot_x] = True
+                tileset = random.choice(REGULAR_TILESETS)
+                start_x = slot_x * 30
+                start_y = slot_y * 30
+                self._place_tileset(tileset, start_x, start_y)
+                self.tileset_occupancy[slot_y][slot_x] = True
     
     def _place_tileset(self, tileset, start_x, start_y):
         """Place a tileset on the map at the given position"""

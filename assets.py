@@ -99,11 +99,11 @@ try:
     PROP_IMAGES["big-well"] = pygame.image.load('./assets/images/textures/square-props/big-well.png')
     PROP_IMAGES["big-spawnner"] = pygame.image.load('./assets/images/textures/square-props/big-spawnner.png')  # Non-collidable
     
-    # Horizontal props (2x3 tiles = 40x60 pixels)
+    # Horizontal props (3x1 tiles = 60x20 pixels)
     PROP_IMAGES["bench-h"] = pygame.image.load('./assets/images/textures/horizontal-props/bench.png')
     PROP_IMAGES["coffin-h"] = pygame.image.load('./assets/images/textures/horizontal-props/coffin.png')
     
-    # Vertical props (3x2 tiles = 60x40 pixels)
+    # Vertical props (1x3 tiles = 20x60 pixels)
     PROP_IMAGES["bench-v-1"] = pygame.image.load('./assets/images/textures/vertical-props/bench-1.png')
     PROP_IMAGES["bench-v-2"] = pygame.image.load('./assets/images/textures/vertical-props/bench-2.png')
     PROP_IMAGES["coffin-v"] = pygame.image.load('./assets/images/textures/vertical-props/coffin.png')
