@@ -21,7 +21,7 @@ class Powerup(ABC):
             self.icon = pygame.image.load(icon_path)
             self.icon = pygame.transform.scale(self.icon, (40, 40))
         except (pygame.error, FileNotFoundError):
-            print(f"Warning: Could not load powerup icon: {icon_path}")
+            print(f"Could not load powerup icon: {icon_path}")
             # Create placeholder icon
             self.icon = pygame.Surface((40, 40))
             self.icon.fill((128, 128, 128))

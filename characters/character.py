@@ -418,7 +418,7 @@ class Character:
                     frame = pygame.transform.scale(frame, (frame_size, frame_size))
                     screen.blit(frame, (x, y))
                 except FileNotFoundError:
-                    print(f" Frame file not found for level {level}.")
+                    print(f"Frame file not found for level {level}.")
 
                 x -= frame_size + spacing
                 if x - frame_size < margin:
@@ -447,7 +447,7 @@ class Character:
                     y -= frame_size + spacing
 
             except FileNotFoundError:
-                print(f" Missing icon or frame for stat {stat}, level {count}")
+                print(f"Missing icon or frame for stat {stat}, level {count}")
 
         # Draw status effects
         for status_name, status_data in self.status_effects.items():
@@ -460,7 +460,7 @@ class Character:
                     frame_image = status_frame_image
                 icons_to_draw.append(("status", status_name, icon, frame_image))
             except FileNotFoundError:
-                print(f" Status icon for {status_name} not found.")
+                print(f"Status icon for {status_name} not found.")
 
         for item_type, item_name, icon, frame_image in icons_to_draw:
             screen.blit(icon, (x + (frame_size - icon_size) // 2, y + (frame_size - icon_size) // 2))

@@ -160,7 +160,7 @@ class SaveManager:
             return merged_data
             
         except Exception as e:
-            print(f" Failed to load save file: {e}")
+            print(f"Failed to load save file: {e}")
             return self.default_settings.copy()
 
     def save(self, data):
@@ -179,7 +179,7 @@ class SaveManager:
             return True
             
         except Exception as e:
-            print(f" Failed to save file: {e}")
+            print(f"Failed to save file: {e}")
             return False
 
     def _merge_with_defaults(self, data):
@@ -201,7 +201,7 @@ class SaveManager:
                 os.remove(self.save_file)
             return self.default_settings.copy()
         except Exception as e:
-            print(f" Failed to delete save file: {e}")
+            print(f"Failed to delete save file: {e}")
             return self.default_settings.copy()
 
     def get(self, key, default=None):

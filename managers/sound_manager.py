@@ -16,7 +16,7 @@ class SoundManager:
             self.sounds[name] = pygame.mixer.Sound(path)
             return True
         except (pygame.error, FileNotFoundError) as e:
-            print(f" Failed to load {name}: {e}")
+            print(f"Failed to load {name}: {e}")
             return False
     
     def play(self, name, loops=0):

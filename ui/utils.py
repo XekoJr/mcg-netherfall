@@ -13,20 +13,9 @@ from assets import (
 
 
 class LoadingSpinner:
-    """Animated loading spinner component."""
-    
+    """Spinning circle loading animation."""
     @staticmethod
     def draw(screen, x, y, radius=30, thickness=4, angle=0):
-        """
-        Draw a spinning circle animation.
-        
-        Args:
-            screen: Pygame surface to draw on
-            x, y: Center position of the spinner
-            radius: Radius of the spinner
-            thickness: Line thickness
-            angle: Current rotation angle (0-360)
-        """
         num_segments = 8
         segment_angle = 360 / num_segments
         
@@ -93,16 +82,6 @@ class IconButton:
     """Icon-based button component."""
     
     def __init__(self, x, y, size, icon_path, hover_color=DARK_GRAY, normal_color=GRAY):
-        """
-        Initialize an icon button.
-        
-        Args:
-            x, y: Position
-            size: Button size (square)
-            icon_path: Path to icon image
-            hover_color: Color when hovered
-            normal_color: Normal color
-        """
         self.rect = pygame.Rect(x, y, size, size)
         self.size = size
         self.hover_color = hover_color
@@ -119,7 +98,7 @@ class IconButton:
             self.icon = pygame.image.load(icon_path)
             self.icon = pygame.transform.scale(self.icon, (int(size * 0.6), int(size * 0.6)))
         except pygame.error as e:
-            print(f"[WARNING] Failed to load icon: {icon_path} - {e}")
+            print(f"Failed to load icon: {icon_path} - {e}")
             self.icon = None
     
     def update(self, mouse_pos):
@@ -159,18 +138,6 @@ class TextButton:
     
     def __init__(self, x, y, width, height, text, font, 
                  hover_color=DARK_RED, normal_color=RED, text_color=WHITE):
-        """
-        Initialize a text button.
-        
-        Args:
-            x, y: Position
-            width, height: Button dimensions
-            text: Button text
-            font: Pygame font object
-            hover_color: Color when hovered
-            normal_color: Normal color
-            text_color: Text color
-        """
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.font = font
@@ -220,17 +187,7 @@ class Panel:
     
     @staticmethod
     def draw(screen, x, y, width, height, bg_color=(20, 20, 20), border_color=WHITE, border_width=3):
-        """
-        Draw a panel with background and border.
-        
-        Args:
-            screen: Pygame surface
-            x, y: Position
-            width, height: Panel dimensions
-            bg_color: Background color
-            border_color: Border color
-            border_width: Border thickness
-        """
+        """Draw a panel with background and border."""
         pygame.draw.rect(screen, bg_color, (x, y, width, height))
         pygame.draw.rect(screen, border_color, (x, y, width, height), border_width)
 
@@ -239,13 +196,6 @@ class RepeatingBackground:
     """Repeating pattern background component."""
     
     def __init__(self, pattern_path="./assets/images/background/background-pattern.png", fallback_color=BLACK):
-        """
-        Initialize repeating background.
-        
-        Args:
-            pattern_path: Path to pattern image (leave None for placeholder)
-            fallback_color: Fallback color if image not found
-        """
         self.pattern = None
         self.fallback_color = fallback_color
         
@@ -253,7 +203,7 @@ class RepeatingBackground:
             try:
                 self.pattern = pygame.image.load(pattern_path)
             except pygame.error as e:
-                print(f"[WARNING] Failed to load pattern: {pattern_path} - {e}")
+                print(f"Failed to load pattern: {pattern_path} - {e}")
     
     def draw(self, screen):
         """Draw the repeating background."""
@@ -281,16 +231,6 @@ class Slider:
     """Horizontal slider component."""
     
     def __init__(self, x, y, width, height, min_val=0, max_val=100, current_val=50):
-        """
-        Initialize a slider.
-        
-        Args:
-            x, y: Position
-            width, height: Slider dimensions
-            min_val: Minimum value
-            max_val: Maximum value
-            current_val: Current value
-        """
         self.rect = pygame.Rect(x, y, width, height)
         self.min_val = min_val
         self.max_val = max_val
@@ -327,17 +267,9 @@ class Slider:
 
 
 def show_loading_screen(screen, image_path=None, duration=1.5):
-    """
-    Show a loading screen with spinning animation.
-    
-    Args:
-        screen: Pygame surface
-        image_path: Path to loading image (optional)
-        duration: Minimum display duration in seconds
-    """
+    """Show a loading screen with spinning animation."""
     bg_color = (5, 7, 6)
     
-    # Load loading image
     loading_image = None
     image_x, image_y = 0, 0
     
@@ -356,7 +288,7 @@ def show_loading_screen(screen, image_path=None, duration=1.5):
             image_x = (screen.get_width() - new_width) // 2
             image_y = (screen.get_height() - new_height) // 2
         except pygame.error as e:
-            print(f"[WARNING] Failed to load loading screen image: {e}")
+            print(f"Failed to load loading screen image: {e}")
             loading_image = None
     
     # Spinner position

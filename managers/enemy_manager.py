@@ -105,7 +105,7 @@ class EnemyManager:
             # Mark the achievement for beating Pyraxis
             if not achievements.get("beat_Pyraxis", False):
                 achievements["beat_Pyraxis"] = True
-                print(f" Updated achievements: {achievements}")
+                print(f"Updated achievements: {achievements}")
 
                 # Save achievements via save_settings
                 save_settings(achievements=achievements)
@@ -119,7 +119,7 @@ class EnemyManager:
             # Mark the achievement for beating Arcanos
             if not achievements.get("beat_Arcanos", False):
                 achievements["beat_Arcanos"] = True
-                print(f" Updated achievements: {achievements}")
+                print(f"Updated achievements: {achievements}")
 
                 # Save achievements via save_settings
                 save_settings(achievements=achievements)

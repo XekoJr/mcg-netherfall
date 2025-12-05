@@ -21,7 +21,7 @@ def create_prop(prop_type, x, y, width=1, height=1, collidable=True, blocks_proj
     """Create a Prop with the corresponding image"""
     image = PROP_IMAGES.get(prop_type)
     if image is None:
-        print(f"  WARNING: Missing image for prop '{prop_type}'")
+        print(f"Missing image for prop '{prop_type}'")
     return Prop(prop_type, x, y, width, height, image, collidable, blocks_projectiles)
 
 # Boss Arena (30x30) - Stone arena with pillars and spawner
