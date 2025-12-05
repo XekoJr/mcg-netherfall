@@ -186,9 +186,8 @@ class SaveManager:
         """Merge loaded data with defaults to ensure all keys exist."""
         merged = self.default_settings.copy()
         
-        # Deep merge for nested dictionaries
         for key, value in data.items():
-            if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+            if key in merged and isinstance(merged[key], dict) and isinstance(value, dict): # Recursive merge for nested dicts
                 merged[key].update(value)
             else:
                 merged[key] = value

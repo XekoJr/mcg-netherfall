@@ -11,14 +11,13 @@ from managers.powerup_manager import PowerupManager
 from tiles import TileManager
 
 class GameManager:
-    # ===== CONFIGURATION SETTINGS =====
-    # Set TESTING_MODE to switch between testing and production
+    # Configuration settings
     TESTING_MODE = True  # Change to True for testing
     
     # Performance settings
     TARGET_FPS = 60
     
-    # Testing configuration (fast gameplay for debugging)
+    # Testing configuration for fast gameplay
     if TESTING_MODE:
         ROUND_DURATION = 10  # 10 seconds per round
         WAVE_1_THRESHOLD = 0.45  # 45% of round (4.5 seconds)
@@ -29,7 +28,7 @@ class GameManager:
         XP_SCALING = 2.10  # 110% scaling
         SHOW_DEBUG_INFO = True
     else:
-        # Production configuration (balanced gameplay)
+        # Balanced gameplay settings
         ROUND_DURATION = 600  # 10 minutes per round
         WAVE_1_THRESHOLD = 0.45  # 45% of round (4.5 minutes)
         WAVE_2_THRESHOLD = 0.10  # 10% of round (1 minute)
@@ -47,10 +46,6 @@ class GameManager:
     ENDLESS_SPAWN_SCALING = 0.3  # +30% spawn rate per round
     ENDLESS_WAVE_SCALING = 0.5  # +50% wave size per round
     BOSS_HEALTH_SCALING = 0.5  # +50% boss health per round
-    
-    # Animation settings
-    ANIMATION_FRAME_DELAY = 100  # Milliseconds between frames
-    # ===== END CONFIGURATION =====
 
     def __init__(self, screen, menu):
         self.screen = screen
@@ -61,11 +56,11 @@ class GameManager:
         self.clock = pygame.time.Clock()
         self.frame_count = 0
         
-        # Initialize tile manager for map generation (5x5 tilesets, each 30x30 tiles = 150x150 tiles total)
+        # Initialize tile manager for map generation
         self.tile_manager = TileManager(150, 150, tile_size=20)
         self.tile_manager.generate_map()
         
-        # Timer system - Uses config values
+        # Timer system
         self.round_duration = self.ROUND_DURATION
         self.round_start_time = 0
         self.current_round = 1
@@ -73,7 +68,7 @@ class GameManager:
         self.wave_1_spawned = False
         self.wave_2_spawned = False
         
-        # Difficulty scaling - Uses config values
+        # Difficulty scaling
         self.base_spawn_interval = self.BASE_SPAWN_INTERVAL
         self.current_spawn_interval = self.base_spawn_interval
         
@@ -152,8 +147,8 @@ class GameManager:
     def spawn_wave(self, enemy_manager, wave_number):
         """Spawn a wave of enemies."""
         wave_sizes = {
-            1: 15,  # First wave spawns 15 enemies
-            2: 25   # Second wave spawns 25 enemies
+            1: 25,  # First wave 25 enemies
+            2: 35   # Second wave 35 enemies
         }
         
         # Scale wave size for endless mode
@@ -259,7 +254,6 @@ class GameManager:
                         return True
                 if event.key == pygame.K_F3:
                     self.hud.toggle_debug()
-                    # Also toggle prop hitboxes with F3
                     self.tile_manager.toggle_hitboxes()
                 if event.key == pygame.K_F11:
                     self._toggle_fullscreen()
@@ -424,7 +418,7 @@ class GameManager:
 
     def draw_game(self, screen, player, camera_x, camera_y, enemy_manager):
         """Draw all game elements."""
-        # Render tile-based map instead of background image
+        # Render map tiles
         self.tile_manager.render(screen, (camera_x, camera_y))
 
         player.draw_with_offset(screen, camera_x, camera_y)
@@ -513,7 +507,7 @@ class GameManager:
         else:
             base_score = 5
         
-        # Try to drop powerup at enemy position
+        # Drop powerup at enemy position
         purchased_powerups = {
             k: v['purchased'] 
             for k, v in self.menu.settings.get('powerups', {}).items()

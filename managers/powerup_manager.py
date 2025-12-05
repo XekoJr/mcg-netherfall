@@ -89,9 +89,6 @@ class PowerupManager:
                 
                 # Remove from drops
                 self.powerup_drops.remove(drop)
-                
-                # Play sound effect (if available)
-                # pickup_sound.play()
         
         # Update active powerup effects
         for powerup in self.active_powerups[:]:

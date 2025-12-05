@@ -1,7 +1,7 @@
 import pygame
 
 class SoundManager:
-    """Manages all game sounds and music."""
+    """Manages all game sounds and music.""" # Not Being Used Yet
     
     def __init__(self):
         self.sounds = {}
