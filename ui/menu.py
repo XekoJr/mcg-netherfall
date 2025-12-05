@@ -320,7 +320,45 @@ class Menu:
                     elif settings_button.is_clicked(mouse_pos):
                         click_sound.play()
                         self.settings_menu()
+                        # Reload background and recreate all UI elements for new resolution
                         self.menu_background = self.load_menu_background()
+                        screen_width = self.screen.get_width()
+                        screen_height = self.screen.get_height()
+                        
+                        # Recreate main action buttons
+                        center_x = (screen_width - center_button_width) // 2
+                        start_y = (screen_height - total_center_height) // 2
+                        play_button = Button(center_x, start_y, center_button_width, center_button_height, 
+                                            self.t('main_menu.play'), self.font_button)
+                        skill_button = Button(center_x, start_y + center_button_height + center_button_spacing, 
+                                             center_button_width, center_button_height, self.t('main_menu.skill_tree'), self.font_button)
+                        store_button = Button(center_x, start_y + (center_button_height + center_button_spacing) * 2,
+                                             center_button_width, center_button_height, self.t('main_menu.store'), self.font_button)
+                        
+                        lang_button = IconButton(
+                            margin,
+                            screen_height - (button_size * 3) - (margin * 3),
+                            button_size,
+                            './assets/images/icons/language.png',
+                            hover_color=utility_button_hover,
+                            normal_color=utility_button_color
+                        )
+                        settings_button = IconButton(
+                            margin,
+                            screen_height - (button_size * 2) - (margin * 2),
+                            button_size,
+                            './assets/images/icons/settings.png',
+                            hover_color=utility_button_hover,
+                            normal_color=utility_button_color
+                        )
+                        quit_button = IconButton(
+                            margin,
+                            screen_height - button_size - margin,
+                            button_size,
+                            './assets/images/icons/exit.png',
+                            hover_color=utility_button_hover,
+                            normal_color=utility_button_color
+                        )
                         
                     elif lang_button.is_clicked(mouse_pos):
                         click_sound.play()
