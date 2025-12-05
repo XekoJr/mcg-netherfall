@@ -195,7 +195,7 @@ class Panel:
 class RepeatingBackground:
     """Repeating pattern background component."""
     
-    def __init__(self, pattern_path="./assets/images/background/background-pattern.png", fallback_color=BLACK):
+    def __init__(self, pattern_path="assets/images/background/background-pattern.png", fallback_color=BLACK):
         self.pattern = None
         self.fallback_color = fallback_color
         

@@ -8,7 +8,7 @@ class Boss1Enemy(Enemy):
     """Boss enemy with unique behaviors."""
     def __init__(self, x, y, tile_manager=None):
         images = [
-            pygame.image.load(f'./assets/images/enemies/boss_1/{i}.png') for i in range(26)
+            pygame.image.load(f'assets/images/enemies/boss_1/{i}.png') for i in range(26)
         ]
         super().__init__(x, y, hp=1000, speed=1, xp_value=30, damage=40, size=(150, 150), images=images, tile_manager=tile_manager)
         self.shoot_frame = 19  # Shoot when animation reaches this frame

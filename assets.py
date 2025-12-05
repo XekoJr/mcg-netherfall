@@ -36,30 +36,29 @@ def initialize_fonts():
 
 # IMAGES
 try:
-    background_image = pygame.image.load('./assets/images/background/background-ingame-final.png')
+    background_image = pygame.image.load('assets/images/background/background-ingame-final.png')
 except pygame.error as e:
     print(f"Error loading background image: {e}")
     background_image = pygame.Surface((WIDTH, HEIGHT))
     background_image.fill((50, 50, 50))
 
-# TILESET BACKGROUND IMAGES (should be 600x600 pixels = 30x30 tiles at 20px each)
-# Note: If your source images are 300x300, they will be scaled to 600x600
+# TILESET BACKGROUND IMAGES
 TILESET_BACKGROUNDS = {}
 try:
     # Load and scale tileset backgrounds to 600x600 pixels
-    bg_1 = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-1.png')
+    bg_1 = pygame.image.load('assets/images/textures/tileset-backgrounds/tileset-bg-1.png')
     TILESET_BACKGROUNDS["bg-1"] = pygame.transform.scale(bg_1, (600, 600))
     
-    bg_2 = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-2.png')
+    bg_2 = pygame.image.load('assets/images/textures/tileset-backgrounds/tileset-bg-2.png')
     TILESET_BACKGROUNDS["bg-2"] = pygame.transform.scale(bg_2, (600, 600))
     
-    bg_cross = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-cross.png')
+    bg_cross = pygame.image.load('assets/images/textures/tileset-backgrounds/tileset-bg-cross.png')
     TILESET_BACKGROUNDS["bg-cross"] = pygame.transform.scale(bg_cross, (600, 600))
     
-    bg_path_h = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-path-horizontal.png')
+    bg_path_h = pygame.image.load('assets/images/textures/tileset-backgrounds/tileset-bg-path-horizontal.png')
     TILESET_BACKGROUNDS["bg-path-horizontal"] = pygame.transform.scale(bg_path_h, (600, 600))
     
-    bg_path_v = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-path-vertical.png')
+    bg_path_v = pygame.image.load('assets/images/textures/tileset-backgrounds/tileset-bg-path-vertical.png')
     TILESET_BACKGROUNDS["bg-path-vertical"] = pygame.transform.scale(bg_path_v, (600, 600))
     
 except pygame.error as e:
@@ -69,45 +68,45 @@ except pygame.error as e:
 PROP_IMAGES = {}
 try:
     # Bushes (1x1 tile = 20x20 pixels)
-    PROP_IMAGES["bush-1"] = pygame.image.load('./assets/images/textures/bushes/bush-1.png')
-    PROP_IMAGES["bush-2"] = pygame.image.load('./assets/images/textures/bushes/bush-2.png')
-    PROP_IMAGES["bush-3"] = pygame.image.load('./assets/images/textures/bushes/bush-3.png')
-    PROP_IMAGES["bush-4"] = pygame.image.load('./assets/images/textures/bushes/bush-4.png')
+    PROP_IMAGES["bush-1"] = pygame.image.load('assets/images/textures/bushes/bush-1.png')
+    PROP_IMAGES["bush-2"] = pygame.image.load('assets/images/textures/bushes/bush-2.png')
+    PROP_IMAGES["bush-3"] = pygame.image.load('assets/images/textures/bushes/bush-3.png')
+    PROP_IMAGES["bush-4"] = pygame.image.load('assets/images/textures/bushes/bush-4.png')
     
     # Rocks (1x1 tile = 20x20 pixels)
-    PROP_IMAGES["rock-1"] = pygame.image.load('./assets/images/textures/rocks/rock-1.png')
-    PROP_IMAGES["rock-2"] = pygame.image.load('./assets/images/textures/rocks/rock-2.png')
-    PROP_IMAGES["rock-3"] = pygame.image.load('./assets/images/textures/rocks/rock-3.png')
+    PROP_IMAGES["rock-1"] = pygame.image.load('assets/images/textures/rocks/rock-1.png')
+    PROP_IMAGES["rock-2"] = pygame.image.load('assets/images/textures/rocks/rock-2.png')
+    PROP_IMAGES["rock-3"] = pygame.image.load('assets/images/textures/rocks/rock-3.png')
     
     # Big rocks (2x2 tiles = 40x40 pixels)
-    PROP_IMAGES["big-rock-1"] = pygame.image.load('./assets/images/textures/rocks/big-rock-1.png')
-    PROP_IMAGES["big-rock-2"] = pygame.image.load('./assets/images/textures/rocks/big-rock-2.png')
+    PROP_IMAGES["big-rock-1"] = pygame.image.load('assets/images/textures/rocks/big-rock-1.png')
+    PROP_IMAGES["big-rock-2"] = pygame.image.load('assets/images/textures/rocks/big-rock-2.png')
     
     # Square props (1x1 or 2x2 tiles)
-    PROP_IMAGES["barrel-1"] = pygame.image.load('./assets/images/textures/square-props/barrel-1.png')
-    PROP_IMAGES["box-1"] = pygame.image.load('./assets/images/textures/square-props/box-1.png')
-    PROP_IMAGES["box-2"] = pygame.image.load('./assets/images/textures/square-props/box-2.png')
-    PROP_IMAGES["vase-1"] = pygame.image.load('./assets/images/textures/square-props/vase-1.png')
-    PROP_IMAGES["vase-2"] = pygame.image.load('./assets/images/textures/square-props/vase-2.png')
-    PROP_IMAGES["chest-close"] = pygame.image.load('./assets/images/textures/square-props/chest-close.png')
-    PROP_IMAGES["chest-open"] = pygame.image.load('./assets/images/textures/square-props/chest-open.png')
-    PROP_IMAGES["stone-rip-1"] = pygame.image.load('./assets/images/textures/square-props/stone-rip-1.png')
-    PROP_IMAGES["stone-rip-2"] = pygame.image.load('./assets/images/textures/square-props/stone-rip-2.png')
-    PROP_IMAGES["stone-text"] = pygame.image.load('./assets/images/textures/square-props/stone-text.png')
+    PROP_IMAGES["barrel-1"] = pygame.image.load('assets/images/textures/square-props/barrel-1.png')
+    PROP_IMAGES["box-1"] = pygame.image.load('assets/images/textures/square-props/box-1.png')
+    PROP_IMAGES["box-2"] = pygame.image.load('assets/images/textures/square-props/box-2.png')
+    PROP_IMAGES["vase-1"] = pygame.image.load('assets/images/textures/square-props/vase-1.png')
+    PROP_IMAGES["vase-2"] = pygame.image.load('assets/images/textures/square-props/vase-2.png')
+    PROP_IMAGES["chest-close"] = pygame.image.load('assets/images/textures/square-props/chest-close.png')
+    PROP_IMAGES["chest-open"] = pygame.image.load('assets/images/textures/square-props/chest-open.png')
+    PROP_IMAGES["stone-rip-1"] = pygame.image.load('assets/images/textures/square-props/stone-rip-1.png')
+    PROP_IMAGES["stone-rip-2"] = pygame.image.load('assets/images/textures/square-props/stone-rip-2.png')
+    PROP_IMAGES["stone-text"] = pygame.image.load('assets/images/textures/square-props/stone-text.png')
     
     # Big props (2x2 tiles = 40x40 pixels)
-    PROP_IMAGES["big-well"] = pygame.image.load('./assets/images/textures/square-props/big-well.png')
-    PROP_IMAGES["big-spawnner"] = pygame.image.load('./assets/images/textures/square-props/big-spawnner.png')  # Non-collidable
+    PROP_IMAGES["big-well"] = pygame.image.load('assets/images/textures/square-props/big-well.png')
+    PROP_IMAGES["big-spawnner"] = pygame.image.load('assets/images/textures/square-props/big-spawnner.png')  # Non-collidable
     
     # Horizontal props (3x1 tiles = 60x20 pixels)
-    PROP_IMAGES["bench-h"] = pygame.image.load('./assets/images/textures/horizontal-props/bench.png')
-    PROP_IMAGES["coffin-v"] = pygame.image.load('./assets/images/textures/horizontal-props/coffin.png')
+    PROP_IMAGES["bench-h"] = pygame.image.load('assets/images/textures/horizontal-props/bench.png')
+    PROP_IMAGES["coffin-v"] = pygame.image.load('assets/images/textures/horizontal-props/coffin.png')
     
     # Vertical props (1x3 tiles = 20x60 pixels)
-    PROP_IMAGES["pillar-1"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-1.png')
-    PROP_IMAGES["pillar-2"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-2.png')
-    PROP_IMAGES["pillar-3"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-3.png')
-    PROP_IMAGES["statue"] = pygame.image.load('./assets/images/textures/vertical-props/statue.png')
+    PROP_IMAGES["pillar-1"] = pygame.image.load('assets/images/textures/vertical-props/pillar-1.png')
+    PROP_IMAGES["pillar-2"] = pygame.image.load('assets/images/textures/vertical-props/pillar-2.png')
+    PROP_IMAGES["pillar-3"] = pygame.image.load('assets/images/textures/vertical-props/pillar-3.png')
+    PROP_IMAGES["statue"] = pygame.image.load('assets/images/textures/vertical-props/statue.png')
     
 except pygame.error as e:
     print(f"✗ ERROR loading prop images: {e}")
@@ -153,41 +152,41 @@ boss_spawn_sound = None
 
 try:
     # Music
-    main_menu_music = pygame.mixer.Sound('./assets/audio/main-menu-music.wav') 
-    game_music = pygame.mixer.Sound('./assets/audio/ingame-music.wav')         
-    boss_music = pygame.mixer.Sound('./assets/audio/boss-music.wav')
-    skill_music = pygame.mixer.Sound('./assets/audio/skill-music.mp3')           
+    main_menu_music = pygame.mixer.Sound('assets/audio/main-menu-music.wav') 
+    game_music = pygame.mixer.Sound('assets/audio/ingame-music.wav')         
+    boss_music = pygame.mixer.Sound('assets/audio/boss-music.wav')
+    skill_music = pygame.mixer.Sound('assets/audio/skill-music.mp3')           
 
     # Menu Interaction
-    hover_sound = pygame.mixer.Sound('./assets/audio/menu-hover.wav')          
-    click_sound = pygame.mixer.Sound('./assets/audio/menu-click.wav')          
+    hover_sound = pygame.mixer.Sound('assets/audio/menu-hover.wav')          
+    click_sound = pygame.mixer.Sound('assets/audio/menu-click.wav')          
 
     # Sound effects
     # Projectile sounds
-    normal_hit_sound = pygame.mixer.Sound('./assets/audio/normal-hit.wav')    
-    crit_hit_sound = pygame.mixer.Sound('./assets/audio/crit-hit.wav')      
-    block_hit_sound = pygame.mixer.Sound('./assets/audio/block_hit.mp3')  
+    normal_hit_sound = pygame.mixer.Sound('assets/audio/normal-hit.wav')    
+    crit_hit_sound = pygame.mixer.Sound('assets/audio/crit-hit.wav')      
+    block_hit_sound = pygame.mixer.Sound('assets/audio/block_hit.mp3')  
 
     # xp and level up sounds
-    collect_xp_sound = pygame.mixer.Sound('./assets/audio/xp-collect.wav')    
-    level_up_sound = pygame.mixer.Sound('./assets/audio/level-up.wav')   
-    skill_bought_sound = pygame.mixer.Sound('./assets/audio/skill-bought.mp3')
-    skill_failed_sound = pygame.mixer.Sound('./assets/audio/skill-failed.mp3') 
+    collect_xp_sound = pygame.mixer.Sound('assets/audio/xp-collect.wav')    
+    level_up_sound = pygame.mixer.Sound('assets/audio/level-up.wav')   
+    skill_bought_sound = pygame.mixer.Sound('assets/audio/skill-bought.mp3')
+    skill_failed_sound = pygame.mixer.Sound('assets/audio/skill-failed.mp3') 
 
     # Player sounds
-    hurt_sound = pygame.mixer.Sound('./assets/audio/hurt.wav')               
-    death_sound = pygame.mixer.Sound('./assets/audio/death/player-death.wav')
+    hurt_sound = pygame.mixer.Sound('assets/audio/hurt.wav')               
+    death_sound = pygame.mixer.Sound('assets/audio/death/player-death.wav')
         
     # Ability sounds
-    ability_obtained_sound = pygame.mixer.Sound('./assets/audio/ability-obtained.wav')
-    ability_used_sound = pygame.mixer.Sound('./assets/audio/ability-used.wav')         
+    ability_obtained_sound = pygame.mixer.Sound('assets/audio/ability-obtained.wav')
+    ability_used_sound = pygame.mixer.Sound('assets/audio/ability-used.wav')         
 
     # Enemy sounds
-    bat_death_sound = pygame.mixer.Sound('./assets/audio/death/bat-death.wav')
-    skeleton_death_sound = pygame.mixer.Sound('./assets/audio/death/skeleton-death.wav')
-    blob_death_sound = pygame.mixer.Sound('./assets/audio/death/blob-death.wav')
-    boss_death_sound = pygame.mixer.Sound('./assets/audio/death/boss-death.wav')
-    boss_spawn_sound = pygame.mixer.Sound('./assets/audio/boss-spawn.wav')
+    bat_death_sound = pygame.mixer.Sound('assets/audio/death/bat-death.wav')
+    skeleton_death_sound = pygame.mixer.Sound('assets/audio/death/skeleton-death.wav')
+    blob_death_sound = pygame.mixer.Sound('assets/audio/death/blob-death.wav')
+    boss_death_sound = pygame.mixer.Sound('assets/audio/death/boss-death.wav')
+    boss_spawn_sound = pygame.mixer.Sound('assets/audio/boss-spawn.wav')
 
 except pygame.error as e:
     print(f"Error loading sounds: {e}")

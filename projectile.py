@@ -5,26 +5,23 @@ from assets import *
 
 # Projectile constants
 PROJECTILE_SPEED = 7
-
 pygame.mixer.init()
 
 # List to store active projectiles
 projectiles = []
 boss_projectiles = []
 
-# Load projectile animations
 try:
     normal_projectile_frames = [
-        pygame.image.load(f'./assets/images/projectile/normal/{i}.png') for i in range(6)  # Adjust number of frames
+        pygame.image.load(f'assets/images/projectile/normal/{i}.png') for i in range(6)
     ]
     crit_projectile_frames = [
-        pygame.image.load(f'./assets/images/projectile/crit/{i}.png') for i in range(6)  # Adjust number of frames
+        pygame.image.load(f'assets/images/projectile/crit/{i}.png') for i in range(6)
     ]
     boss_projectile_frames = [
-        pygame.image.load(f'./assets/images/projectile/boss/{i}.png') for i in range(11)  # Boss projectile frames
+        pygame.image.load(f'assets/images/projectile/boss/{i}.png') for i in range(11)
     ]
 
-    # Optionally resize frames if needed
     normal_projectile_frames = [pygame.transform.scale(frame, (60, 25)) for frame in normal_projectile_frames]
     crit_projectile_frames = [pygame.transform.scale(frame, (60, 25)) for frame in crit_projectile_frames]
     boss_projectile_frames = [pygame.transform.scale(frame, (60, 25)) for frame in boss_projectile_frames]
@@ -64,7 +61,7 @@ def move_projectiles(tile_manager=None):
     """Update the position of all projectiles."""
     for projectile in projectiles[:]:
         projectile['x'] += projectile['dx'] * PROJECTILE_SPEED
-        projectile['y'] += projectile['dy'] * PROJECTILE_SPEED  # Move y
+        projectile['y'] += projectile['dy'] * PROJECTILE_SPEED
 
         # Check collision with props if tile_manager provided
         if tile_manager:
@@ -114,7 +111,6 @@ def draw_projectiles(screen, camera_x, camera_y):
             projectile['last_frame_time'] = current_time
 
 # Boss projectile functions
-
 def move_boss_projectiles():
     """Move all boss projectiles."""
     for projectile in boss_projectiles[:]:
@@ -145,6 +141,6 @@ def draw_boss_projectiles(screen, camera_x, camera_y):
         screen.blit(rotated_frame, frame_rect.topleft)
 
         # Update animation frame
-        if current_time - projectile['last_frame_time'] > 100:  # Adjust frame time as needed
+        if current_time - projectile['last_frame_time'] > 100:
             projectile['frame_index'] = (frame_index + 1) % len(frames)
             projectile['last_frame_time'] = current_time

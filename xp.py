@@ -2,14 +2,14 @@ import pygame
 from assets import *
 
 # XP properties
-xp_width = 10  # Width of the XP
-xp_height = 14  # Height of the XP
+xp_width = 10
+xp_height = 14
 xp_drops = []  # List to store XP drops
-player_xp = 0  # Initial XP
+player_xp = 0
 
 # Load the XP image
 try:
-    xp_image = pygame.image.load('./assets/images/xp/xp-drop.png')
+    xp_image = pygame.image.load('assets/images/xp/xp-drop.png')
     xp_image = pygame.transform.scale(xp_image, (xp_width, xp_height))  # Scale the image to the desired dimensions
 except pygame.error as e:
     print(f"Error loading XP image: {e}")

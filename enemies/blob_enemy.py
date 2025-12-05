@@ -6,7 +6,7 @@ class BlobEnemy(Enemy):
     def __init__(self, x, y, tile_manager=None):
         # Load images
         images = [
-            pygame.image.load(f'./assets/images/enemies/blob/{i}.png') for i in range(4)
+            pygame.image.load(f'assets/images/enemies/blob/{i}.png') for i in range(4)
         ]
         super().__init__(x, y, hp=50, speed=0.8, xp_value=20, damage=20, size=(80, 70), images=images, tile_manager=tile_manager)
         self.poison_damage = 3  # Damage per tick

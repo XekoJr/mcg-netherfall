@@ -6,7 +6,7 @@ class InvincibilityAbility(Ability):
     def __init__(self, name="Invincibility Boost",
                  description="Increase invincibility duration after taking damage.",
                  cost=6,
-                 icon_path='./assets/images/abilities/invincibility.png',
+                 icon_path='assets/images/abilities/invincibility.png',
                  images=[],
                  level=1  # Starting level
                  ):

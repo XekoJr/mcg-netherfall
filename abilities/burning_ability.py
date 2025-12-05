@@ -6,7 +6,7 @@ class BurningAbility(Ability):
     def __init__(self, name="Burning Touch",
                  description="Apply burning to enemies, dealing damage over time.",
                  cost=5,
-                 icon_path='./assets/images/abilities/burn.png',
+                 icon_path='assets/images/abilities/burn.png',
                  images=[]
                  ):
         super().__init__(name, description, cost, icon_path, images, active=False)

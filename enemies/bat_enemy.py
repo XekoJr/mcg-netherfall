@@ -6,6 +6,6 @@ class BatEnemy(Enemy):
     def __init__(self, x, y, tile_manager=None):
         # Load images
         images = [
-            pygame.image.load(f'./assets/images/enemies/bat/{i}.png') for i in range(4)
+            pygame.image.load(f'assets/images/enemies/bat/{i}.png') for i in range(4)
         ]
         super().__init__(x, y, hp=15, speed=1.5, xp_value=5, damage=10, size=(50, 35), images=images, tile_manager=tile_manager)

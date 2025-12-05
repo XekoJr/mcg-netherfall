@@ -8,7 +8,7 @@ class Boss2Enemy(Enemy):
     """Boss that spawns skeleton enemies and maintains a radius around the player."""
     def __init__(self, x, y, spawn_radius=200, num_skeletons=3, skeleton_cooldown=280, tile_manager=None):
         images = [
-            pygame.image.load(f'./assets/images/enemies/boss_2/{i}.png') for i in range(56)
+            pygame.image.load(f'assets/images/enemies/boss_2/{i}.png') for i in range(56)
         ]
         super().__init__(x, y, hp=1000, speed=2, xp_value=200, damage=20, size=(150, 150), images=images, tile_manager=tile_manager)
         self.tile_manager = tile_manager

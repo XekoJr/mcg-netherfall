@@ -10,7 +10,7 @@ class SpeedPowerup(Powerup):
         super().__init__(
             name="Speed Boost",
             description="Increases movement speed for 10 seconds",
-            icon_path="./assets/images/powerups/speed.png",
+            icon_path="assets/images/powerups/speed.png",
             duration=10,
             is_instant=False
         )

@@ -10,7 +10,7 @@ class BombPowerup(Powerup):
         super().__init__(
             name="Bomb",
             description="Deals massive damage to all enemies",
-            icon_path="./assets/images/powerups/bomb.png",
+            icon_path="assets/images/powerups/bomb.png",
             duration=0,
             is_instant=True
         )

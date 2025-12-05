@@ -8,7 +8,7 @@ class HealingAbility(Ability):
     def __init__(self, name="Healing Aura", 
                  description="Heal 5 HP every 10 seconds", 
                  cost=5, 
-                 icon_path='./assets/images/abilities/heal.png', 
+                 icon_path='assets/images/abilities/heal.png', 
                  images=[]
                  ):
         super().__init__(name, description, cost, icon_path, images, active=False)

@@ -9,7 +9,7 @@ class RagePowerup(Powerup):
         super().__init__(
             name="Rage",
             description="Increases attack speed for 10 seconds",
-            icon_path="./assets/images/powerups/rage.png",
+            icon_path="assets/images/powerups/rage.png",
             duration=10,
             is_instant=False
         )

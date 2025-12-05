@@ -55,7 +55,7 @@ class Menu:
         
         # Initialize repeating pattern background for other screens
         self.pattern_background = RepeatingBackground(
-            pattern_path="./assets/images/background/background-pattern.png",
+            pattern_path="assets/images/background/background-pattern.png",
             fallback_color=BLACK
         )
         
@@ -147,7 +147,7 @@ class Menu:
     def load_menu_background(self):
         """Load and scale the main menu background image."""
         try:
-            bg = pygame.image.load("./assets/images/background/netherfall-game-background.png")
+            bg = pygame.image.load("assets/images/background/netherfall-game-background.png")
             return pygame.transform.scale(bg, (self.screen.get_width(), self.screen.get_height()))
         except pygame.error as e:
             print(f"Error loading menu background: {e}")
@@ -211,7 +211,7 @@ class Menu:
             margin,
             screen_height - (button_size * 3) - (margin * 3),
             button_size,
-            './assets/images/icons/language.png',
+            'assets/images/icons/language.png',
             hover_color=utility_button_hover,
             normal_color=utility_button_color
         )
@@ -220,7 +220,7 @@ class Menu:
             margin,
             screen_height - (button_size * 2) - (margin * 2),
             button_size,
-            './assets/images/icons/settings.png',
+            'assets/images/icons/settings.png',
             hover_color=utility_button_hover,
             normal_color=utility_button_color
         )
@@ -229,7 +229,7 @@ class Menu:
             margin,
             screen_height - button_size - margin,
             button_size,
-            './assets/images/icons/exit.png',
+            'assets/images/icons/exit.png',
             hover_color=utility_button_hover,
             normal_color=utility_button_color
         )
@@ -339,7 +339,7 @@ class Menu:
                             margin,
                             screen_height - (button_size * 3) - (margin * 3),
                             button_size,
-                            './assets/images/icons/language.png',
+                            'assets/images/icons/language.png',
                             hover_color=utility_button_hover,
                             normal_color=utility_button_color
                         )
@@ -347,7 +347,7 @@ class Menu:
                             margin,
                             screen_height - (button_size * 2) - (margin * 2),
                             button_size,
-                            './assets/images/icons/settings.png',
+                            'assets/images/icons/settings.png',
                             hover_color=utility_button_hover,
                             normal_color=utility_button_color
                         )
@@ -355,7 +355,7 @@ class Menu:
                             margin,
                             screen_height - button_size - margin,
                             button_size,
-                            './assets/images/icons/exit.png',
+                            'assets/images/icons/exit.png',
                             hover_color=utility_button_hover,
                             normal_color=utility_button_color
                         )
@@ -976,13 +976,13 @@ class Menu:
 
                 # Determine icon and frame paths
                 icon_path = (
-                    f'./assets/images/{skill_type}/{skill_name}.png'
+                    f'assets/images/{skill_type}/{skill_name}.png'
                     if can_unlock or level > 0
-                    else './assets/images/locked.png'
+                    else 'assets/images/locked.png'
                 )
                 frame_level = min(level + 1, 6 if skill_type == "stats" else 5)
                 frame_path = (
-                    f'./assets/images/{skill_type}/{skill_type}-frame-{frame_level}.png'
+                    f'assets/images/{skill_type}/{skill_type}-frame-{frame_level}.png'
                     if level > 0
                     else None
                 )
@@ -1042,7 +1042,7 @@ class Menu:
             # Show locked state if requirements not met
             if not can_unlock:
                 try:
-                    lock_icon = pygame.image.load('./assets/images/locked.png')
+                    lock_icon = pygame.image.load('assets/images/locked.png')
                     lock_icon = pygame.transform.scale(lock_icon, (100, 100))
                     icon_center_x = details_x + 10 + (120 // 2)
                     self.screen.blit(lock_icon, (details_x + 20, details_y + 50))
@@ -1064,9 +1064,9 @@ class Menu:
             level = skill_data["level"]
             max_level = skill_data["max_level"]
             skill_type = skill_data["type"]
-            icon_path = f'./assets/images/{skill_type}/{skill_name}.png'
+            icon_path = f'assets/images/{skill_type}/{skill_name}.png'
             frame_level = min(level + 1, 6 if skill_type == "stats" else 5)
-            frame_path = f'./assets/images/{skill_type}/{skill_type}-frame-{frame_level}.png'
+            frame_path = f'assets/images/{skill_type}/{skill_type}-frame-{frame_level}.png'
 
             try:
                 icon = pygame.image.load(icon_path)
@@ -1188,27 +1188,27 @@ class Menu:
             'magnet': {
                 'name': self.t('store.magnet_name'),
                 'description': self.t('store.magnet_desc'),
-                'icon': './assets/images/powerups/magnet.png'
+                'icon': 'assets/images/powerups/magnet.png'
             },
             'heal': {
                 'name': self.t('store.heal_name'),
                 'description': self.t('store.heal_desc'),
-                'icon': './assets/images/powerups/heal.png'
+                'icon': 'assets/images/powerups/heal.png'
             },
             'speed': {
                 'name': self.t('store.speed_name'),
                 'description': self.t('store.speed_desc'),
-                'icon': './assets/images/powerups/speed.png'
+                'icon': 'assets/images/powerups/speed.png'
             },
             'rage': {
                 'name': self.t('store.rage_name'),
                 'description': self.t('store.rage_desc'),
-                'icon': './assets/images/powerups/rage.png'
+                'icon': 'assets/images/powerups/rage.png'
             },
             'bomb': {
                 'name': self.t('store.bomb_name'),
                 'description': self.t('store.bomb_desc'),
-                'icon': './assets/images/powerups/bomb.png'
+                'icon': 'assets/images/powerups/bomb.png'
             }
         }
 
@@ -1260,7 +1260,7 @@ class Menu:
                 # Draw frame
                 if is_purchased:
                     try:
-                        frame = pygame.image.load('./assets/images/stats/stats-frame-1.png')
+                        frame = pygame.image.load('assets/images/stats/stats-frame-1.png')
                         frame = pygame.transform.scale(frame, (80, 80))
                         self.screen.blit(frame, (x - 40, y - 40))
                     except FileNotFoundError:
@@ -1309,7 +1309,7 @@ class Menu:
                 self.screen.blit(icon, (details_x + 110, details_y + 20))
                 
                 if is_purchased:
-                    frame = pygame.image.load('./assets/images/stats/stats-frame-1.png')
+                    frame = pygame.image.load('assets/images/stats/stats-frame-1.png')
                     frame = pygame.transform.scale(frame, (120, 120))
                     self.screen.blit(frame, (details_x + 100, details_y + 10))
             except (pygame.error, FileNotFoundError):

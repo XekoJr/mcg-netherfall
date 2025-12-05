@@ -7,7 +7,7 @@ class ShieldAbility(Ability):
     def __init__(self, name="Block Shield", 
                  description="Block one incoming attack and resets after 30 seconds.", 
                  cost=5, 
-                 icon_path='./assets/images/abilities/shield.png', 
+                 icon_path='assets/images/abilities/shield.png', 
                  images=[]
                  ):
         super().__init__(name, description, cost, icon_path, images, active=False)

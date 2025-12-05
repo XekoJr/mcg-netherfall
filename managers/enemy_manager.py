@@ -1,7 +1,7 @@
 import json
 import pygame
 from enemies import *
-from abilities.__init__ import *
+from abilities import *
 from assets import *
 import random
 

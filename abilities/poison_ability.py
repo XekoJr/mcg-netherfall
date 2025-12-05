@@ -6,7 +6,7 @@ class PoisonAbility(Ability):
     def __init__(self, name="Poison Touch",
                  description="Apply poison to enemies, dealing damage over time.",
                  cost=4,
-                 icon_path='./assets/images/abilities/poison.png',
+                 icon_path='assets/images/abilities/poison.png',
                  images=[]
                  ):
         super().__init__(name, description, cost, icon_path, images, active=False)

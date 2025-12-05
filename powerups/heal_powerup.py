@@ -8,7 +8,7 @@ class HealPowerup(Powerup):
         super().__init__(
             name="Health Pack",
             description="Restores 50% of max health",
-            icon_path="./assets/images/powerups/heal.png",
+            icon_path="assets/images/powerups/heal.png",
             duration=0,
             is_instant=True
         )

@@ -211,11 +211,11 @@ class Character:
         """Draw hearts to represent health at bottom-left."""
         if not hasattr(self, 'heart_images'):
             self.heart_images = {
-                "empty": pygame.image.load('./assets/images/hp/empty.png'),
-                "low": pygame.image.load('./assets/images/hp/low.png'),
-                "half": pygame.image.load('./assets/images/hp/half.png'),
-                "high": pygame.image.load('./assets/images/hp/high.png'),
-                "full": pygame.image.load('./assets/images/hp/full.png')
+                "empty": pygame.image.load('assets/images/hp/empty.png'),
+                "low": pygame.image.load('assets/images/hp/low.png'),
+                "half": pygame.image.load('assets/images/hp/half.png'),
+                "high": pygame.image.load('assets/images/hp/high.png'),
+                "full": pygame.image.load('assets/images/hp/full.png')
             }
 
         heart_size = 32
@@ -255,8 +255,8 @@ class Character:
     def draw_xp(self, screen):
         """Draw XP bar at top-center."""
         if not hasattr(self, 'xp_bar_background'):
-            self.xp_bar_background = pygame.image.load('./assets/images/xp/xp-bar.png')
-            self.xp_bar_green = pygame.image.load('./assets/images/xp/xp.png')
+            self.xp_bar_background = pygame.image.load('assets/images/xp/xp-bar.png')
+            self.xp_bar_green = pygame.image.load('assets/images/xp/xp.png')
 
         original_width = self.xp_bar_background.get_width()
         original_height = self.xp_bar_background.get_height()
@@ -396,9 +396,9 @@ class Character:
         x = screen.get_width() - frame_size - margin
         y = screen.get_height() - frame_size - margin
 
-        status_frame_image = pygame.image.load('./assets/images/status/debuff-frame-2.png')
+        status_frame_image = pygame.image.load('assets/images/status/debuff-frame-2.png')
         status_frame_image = pygame.transform.scale(status_frame_image, (frame_size, frame_size))
-        status_frame_boss_image = pygame.image.load('./assets/images/status/debuff-frame-boss.png')
+        status_frame_boss_image = pygame.image.load('assets/images/status/debuff-frame-boss.png')
         status_frame_boss_image = pygame.transform.scale(status_frame_boss_image, (frame_size, frame_size))
 
         icons_to_draw = []
@@ -412,7 +412,7 @@ class Character:
                 ability.draw_icon(screen, x + (frame_size - icon_size) // 2, y + (frame_size - icon_size) // 2, icon_size)
 
                 level = getattr(ability, 'level', 1)
-                frame_path = f'./assets/images/abilities/abilities-frame-{min(level, 5)}.png'
+                frame_path = f'assets/images/abilities/abilities-frame-{min(level, 5)}.png'
                 try:
                     frame = pygame.image.load(frame_path)
                     frame = pygame.transform.scale(frame, (frame_size, frame_size))
@@ -430,13 +430,13 @@ class Character:
             if count > 6:
                 continue
 
-            icon_path = f'./assets/images/stats/{stat}.png'
+            icon_path = f'assets/images/stats/{stat}.png'
             try:
                 icon = pygame.image.load(icon_path)
                 icon = pygame.transform.scale(icon, (icon_size, icon_size))
                 screen.blit(icon, (x + (frame_size - icon_size) // 2, y + (frame_size - icon_size) // 2))
 
-                frame_path = f'./assets/images/stats/stats-frame-{count}.png'
+                frame_path = f'assets/images/stats/stats-frame-{count}.png'
                 frame = pygame.image.load(frame_path)
                 frame = pygame.transform.scale(frame, (frame_size, frame_size))
                 screen.blit(frame, (x, y))
@@ -452,7 +452,7 @@ class Character:
         # Draw status effects
         for status_name, status_data in self.status_effects.items():
             try:
-                icon = pygame.image.load(f'./assets/images/status/{status_name}.png')
+                icon = pygame.image.load(f'assets/images/status/{status_name}.png')
                 icon = pygame.transform.scale(icon, (icon_size, icon_size))
                 if status_data.get("enemy") == "Boss":
                     frame_image = status_frame_boss_image

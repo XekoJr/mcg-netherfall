@@ -19,7 +19,7 @@ screen = Menu.initialize_display(save_manager)
 
 show_loading_screen(
     screen,
-    image_path='./assets/images/background/background-production-loading.png',
+    image_path='assets/images/background/background-production-loading.png',
     duration=1.5
 )
 
