@@ -45,36 +45,28 @@ except pygame.error as e:
 # TILESET BACKGROUND IMAGES (should be 600x600 pixels = 30x30 tiles at 20px each)
 # Note: If your source images are 300x300, they will be scaled to 600x600
 TILESET_BACKGROUNDS = {}
-print("\n=== LOADING TILESET BACKGROUNDS ===")
 try:
     # Load and scale tileset backgrounds to 600x600 pixels
     bg_1 = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-1.png')
     TILESET_BACKGROUNDS["bg-1"] = pygame.transform.scale(bg_1, (600, 600))
-    print("  ✓ bg-1 loaded and scaled to 600x600")
     
     bg_2 = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-2.png')
     TILESET_BACKGROUNDS["bg-2"] = pygame.transform.scale(bg_2, (600, 600))
-    print("  ✓ bg-2 loaded and scaled to 600x600")
     
     bg_cross = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-cross.png')
     TILESET_BACKGROUNDS["bg-cross"] = pygame.transform.scale(bg_cross, (600, 600))
-    print("  ✓ bg-cross loaded and scaled to 600x600")
     
     bg_path_h = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-path-horizontal.png')
     TILESET_BACKGROUNDS["bg-path-horizontal"] = pygame.transform.scale(bg_path_h, (600, 600))
-    print("  ✓ bg-path-horizontal loaded and scaled to 600x600")
     
     bg_path_v = pygame.image.load('./assets/images/textures/tileset-backgrounds/tileset-bg-path-vertical.png')
     TILESET_BACKGROUNDS["bg-path-vertical"] = pygame.transform.scale(bg_path_v, (600, 600))
-    print("  ✓ bg-path-vertical loaded and scaled to 600x600")
     
-    print(f"Total tileset backgrounds loaded: {len(TILESET_BACKGROUNDS)}")
 except pygame.error as e:
     print(f"✗ ERROR loading tileset backgrounds: {e}")
 
 # PROP IMAGES (decorative objects)
 PROP_IMAGES = {}
-print("\n=== LOADING PROP IMAGES ===")
 try:
     # Bushes (1x1 tile = 20x20 pixels)
     PROP_IMAGES["bush-1"] = pygame.image.load('./assets/images/textures/bushes/bush-1.png')
@@ -120,8 +112,6 @@ try:
     PROP_IMAGES["pillar-3"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-3.png')
     PROP_IMAGES["statue"] = pygame.image.load('./assets/images/textures/vertical-props/statue.png')
     
-    print(f"Total prop images loaded: {len(PROP_IMAGES)}")
-    print("=== PROP IMAGES COMPLETE ===\n")
 except pygame.error as e:
     print(f"✗ ERROR loading prop images: {e}")
 

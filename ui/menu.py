@@ -967,7 +967,7 @@ class Menu:
                     icon = pygame.transform.scale(icon, (60, 60))
                     self.screen.blit(icon, (x - 30, y - 30))
                 except FileNotFoundError:
-                    print(f"[DEBUG] Missing image or frame for {skill_name}: {icon_path} or {frame_path}")
+                    print(f" Missing image or frame for {skill_name}: {icon_path} or {frame_path}")
 
             # Draw selected skill details panel
             if selected_skill:
@@ -1029,7 +1029,7 @@ class Menu:
                             details_y + 240 + idx * 40
                         ))
                 except FileNotFoundError:
-                    print("[DEBUG] Missing lock icon")
+                    print(" Missing lock icon")
                 return
 
             # Show skill details if unlockable
@@ -1050,7 +1050,7 @@ class Menu:
                     frame = pygame.transform.scale(frame, (120, 120))
                     self.screen.blit(frame, (details_x + 10, details_y + 40))
             except FileNotFoundError as e:
-                print(f"[DEBUG] Missing frame or icon for {skill_name}: {e}")
+                print(f" Missing frame or icon for {skill_name}: {e}")
 
             # Display skill information
             effect = skill_data["effect"]

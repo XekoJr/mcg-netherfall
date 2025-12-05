@@ -10,7 +10,7 @@ class BombPowerup(Powerup):
         super().__init__(
             name="Bomb",
             description="Deals massive damage to all enemies",
-            icon_path="./assets/images/powerups/bomb.png",  # Placeholder
+            icon_path="./assets/images/powerups/bomb.png",
             duration=0,
             is_instant=True
         )
@@ -96,7 +96,7 @@ class BombPowerup(Powerup):
         screen_x = int(self.player_pos[0] - camera_x)
         screen_y = int(self.player_pos[1] - camera_y)
         
-        # Draw multiple circles for shockwave effect
+        # Draw multiple circles
         for i in range(3):
             offset = i * 10
             radius = max(0, int(self.current_radius - offset))

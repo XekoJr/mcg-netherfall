@@ -98,7 +98,7 @@ class TileManager:
         """Toggle debug hitbox rendering."""
         self.show_hitboxes = not self.show_hitboxes
         state = "ON" if self.show_hitboxes else "OFF"
-        print(f"[DEBUG] Prop hitboxes: {state}")
+        print(f" Prop hitboxes: {state}")
         return self.show_hitboxes
     
     def build_collision_hash(self):

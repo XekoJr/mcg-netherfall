@@ -9,7 +9,7 @@ class MagnetPowerup(Powerup):
         super().__init__(
             name="XP Magnet",
             description="Attracts all XP on the map to you",
-            icon_path="./assets/images/powerups/magnet.png",  # Placeholder
+            icon_path="./assets/images/powerups/magnet.png",
             duration=0,
             is_instant=True
         )

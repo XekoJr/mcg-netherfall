@@ -22,9 +22,9 @@ class Ability:
                 icon = pygame.transform.scale(icon, (size, size))
                 screen.blit(icon, (x, y))
             except FileNotFoundError:
-                print(f"[DEBUG] Icon not found for {self.name}: {self.icon_path}")
+                print(f" Icon not found for {self.name}: {self.icon_path}")
         else:
-            print(f"[DEBUG] No icon path for {self.name}")
+            print(f" No icon path for {self.name}")
 
     def activate(self):
         """Enable the ability."""
