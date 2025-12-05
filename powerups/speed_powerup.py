@@ -58,37 +58,3 @@ class SpeedPowerup(Powerup):
         
         # Draw particles
         self.draw_particles(screen, camera_x, camera_y)
-        
-        # Draw speed lines behind player
-        player_screen_x = player.x + player.size // 2 - camera_x
-        player_screen_y = player.y + player.size // 2 - camera_y
-        
-        # Get player direction from last movement
-        keys = pygame.key.get_pressed()
-        dx, dy = 0, 0
-        
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            dx = 1
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            dx = -1
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            dy = 1
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            dy = -1
-        
-        # Draw speed lines
-        if dx != 0 or dy != 0:
-            for i in range(3):
-                line_length = 20 + i * 10
-                alpha = int(150 - i * 50)
-                
-                end_x = player_screen_x + dx * line_length
-                end_y = player_screen_y + dy * line_length
-                
-                pygame.draw.line(
-                    screen,
-                    (0, 255, 0, alpha),
-                    (player_screen_x, player_screen_y),
-                    (end_x, end_y),
-                    3 - i
-                )

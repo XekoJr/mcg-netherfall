@@ -51,34 +51,5 @@ class HealPowerup(Powerup):
         if not self.active:
             return
         
-        # Draw particles
+        # Draw particles only
         self.draw_particles(screen, camera_x, camera_y)
-        
-        # Draw healing cross/plus symbol
-        player_screen_x = player.x + player.size // 2 - camera_x
-        player_screen_y = player.y + player.size // 2 - camera_y
-        
-        # Fade out over time
-        elapsed = pygame.time.get_ticks() - self.start_time
-        alpha = int(255 * (1 - elapsed / self.animation_duration))
-        
-        cross_size = 30
-        thickness = 6
-        
-        # Vertical line
-        pygame.draw.line(
-            screen,
-            (255, 255, 255, alpha),
-            (player_screen_x, player_screen_y - cross_size),
-            (player_screen_x, player_screen_y + cross_size),
-            thickness
-        )
-        
-        # Horizontal line
-        pygame.draw.line(
-            screen,
-            (255, 255, 255, alpha),
-            (player_screen_x - cross_size, player_screen_y),
-            (player_screen_x + cross_size, player_screen_y),
-            thickness
-        )

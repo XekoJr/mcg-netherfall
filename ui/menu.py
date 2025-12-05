@@ -164,8 +164,8 @@ class Menu:
         self.save_manager.save(self.settings)
 
     def convert_score_to_skill_points(self, score):
-        """Convert final score to skill points (100 score = 1 SP)."""
-        skill_points_earned = score // 100
+        """Convert final score to skill points (50 score = 1 SP)."""
+        skill_points_earned = score // 50
         self.settings["skill_points"] += skill_points_earned
         self.save_settings()
         return skill_points_earned
@@ -897,6 +897,9 @@ class Menu:
             ("burn_duration", "invincibility"),
         ]
 
+        back_button = TextButton(20, self.screen.get_height() - 70, 150, 50, 
+                                self.t('skill_tree.back'), self.font_button)
+        
         def render_screen():
             """Render the complete skill tree screen."""
             # Draw pattern background
@@ -971,18 +974,9 @@ class Menu:
                 upgrade_button = render_selected_skill(selected_skill)
 
             # Draw back button
-            back_button_x = 20
-            back_button_y = self.screen.get_height() - 70
-            back_button_width, back_button_height = 150, 50
-            back_hovered = back_button_x < mouse_x < back_button_x + back_button_width and \
-                        back_button_y < mouse_y < back_button_y + back_button_height
-            back_button_color = DARK_RED if back_hovered else RED
-            pygame.draw.rect(self.screen, back_button_color, (back_button_x, back_button_y, back_button_width, back_button_height))
-            back_text = self.font_button.render(self.t('skill_tree.back'), True, WHITE)
-            self.screen.blit(back_text, (
-                back_button_x + (back_button_width - back_text.get_width()) // 2,
-                back_button_y + (back_button_height - back_text.get_height()) // 2
-            ))
+            back_button.rect.y = self.screen.get_height() - 70
+            back_button.update((mouse_x, mouse_y))
+            back_button.draw(self.screen)
 
         def render_selected_skill(skill_name):
             """Render the skill details panel for the selected skill."""
@@ -1103,10 +1097,7 @@ class Menu:
                             render_screen()
 
                     # Check back button click
-                    button_x = 20
-                    button_y = screen_height - 70
-                    button_width, button_height = 200, 50
-                    if pygame.Rect(button_x, button_y, button_width, button_height).collidepoint(mouse_x, mouse_y):
+                    if back_button.is_clicked((mouse_x, mouse_y)):
                         click_sound.play()
                         skill_music.stop()
                         main_menu_music.play(-1)
@@ -1146,11 +1137,11 @@ class Menu:
         # Initialize powerups in settings if not present
         if "powerups" not in self.settings:
             self.settings["powerups"] = {
-                'magnet': {'purchased': False, 'cost': 500},
-                'bomb': {'purchased': False, 'cost': 1000},
-                'speed': {'purchased': False, 'cost': 750},
-                'rage': {'purchased': False, 'cost': 750},
-                'heal': {'purchased': False, 'cost': 500}
+                'magnet': {'purchased': False, 'cost': 5},
+                'bomb': {'purchased': False, 'cost': 10},
+                'speed': {'purchased': False, 'cost': 7},
+                'rage': {'purchased': False, 'cost': 7},
+                'heal': {'purchased': False, 'cost': 5}
             }
             self.save_settings()
 
@@ -1192,6 +1183,9 @@ class Menu:
             'bomb': (250, 550)
         }
 
+        back_button = TextButton(20, screen_height - 70, 150, 50, 
+                                self.t('store.back'), self.font_button)
+        
         def render_screen():
             """Render the complete store screen."""
             nonlocal purchase_button
@@ -1255,23 +1249,9 @@ class Menu:
             if selected_powerup:
                 purchase_button = render_selected_powerup(selected_powerup)
 
-            # Draw back button
-            back_button_x = 20
-            back_button_y = screen_height - 70
-            back_button_width, back_button_height = 150, 50
-            
-            back_hovered = (back_button_x < mouse_x < back_button_x + back_button_width and 
-                          back_button_y < mouse_y < back_button_y + back_button_height)
-            back_button_color = DARK_RED if back_hovered else RED
-            
-            pygame.draw.rect(self.screen, back_button_color, 
-                           (back_button_x, back_button_y, back_button_width, back_button_height))
-            
-            back_text = self.font_button.render(self.t('store.back'), True, WHITE)
-            self.screen.blit(back_text, (
-                back_button_x + (back_button_width - back_text.get_width()) // 2,
-                back_button_y + (back_button_height - back_text.get_height()) // 2
-            ))
+            back_button.rect.y = screen_height - 70
+            back_button.update((mouse_x, mouse_y))
+            back_button.draw(self.screen)
 
         def render_selected_powerup(powerup_id):
             """Render powerup details panel."""
@@ -1388,9 +1368,7 @@ class Menu:
                             break
 
                     # Check back button
-                    button_x = 20
-                    button_y = screen_height - 70
-                    if pygame.Rect(button_x, button_y, 150, 50).collidepoint(mouse_x, mouse_y):
+                    if back_button.is_clicked((mouse_x, mouse_y)):
                         click_sound.play()
                         running = False
 

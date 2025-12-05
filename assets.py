@@ -101,12 +101,9 @@ try:
     
     # Horizontal props (3x1 tiles = 60x20 pixels)
     PROP_IMAGES["bench-h"] = pygame.image.load('./assets/images/textures/horizontal-props/bench.png')
-    PROP_IMAGES["coffin-h"] = pygame.image.load('./assets/images/textures/horizontal-props/coffin.png')
+    PROP_IMAGES["coffin-v"] = pygame.image.load('./assets/images/textures/horizontal-props/coffin.png')
     
     # Vertical props (1x3 tiles = 20x60 pixels)
-    PROP_IMAGES["bench-v-1"] = pygame.image.load('./assets/images/textures/vertical-props/bench-1.png')
-    PROP_IMAGES["bench-v-2"] = pygame.image.load('./assets/images/textures/vertical-props/bench-2.png')
-    PROP_IMAGES["coffin-v"] = pygame.image.load('./assets/images/textures/vertical-props/coffin.png')
     PROP_IMAGES["pillar-1"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-1.png')
     PROP_IMAGES["pillar-2"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-2.png')
     PROP_IMAGES["pillar-3"] = pygame.image.load('./assets/images/textures/vertical-props/pillar-3.png')

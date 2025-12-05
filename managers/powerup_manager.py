@@ -14,11 +14,11 @@ class PowerupManager:
         
         # Powerup drop rates (only if purchased)
         self.drop_rates = {
-            'magnet': 0.05,  # 5% chance
-            'bomb': 0.03,    # 3% chance
-            'speed': 0.04,   # 4% chance
-            'rage': 0.04,    # 4% chance
-            'heal': 0.06     # 6% chance
+            'magnet': 0.1,
+            'bomb': 0.05,
+            'speed': 0.15,
+            'rage': 0.1,
+            'heal': 0.15
         }
         
         # Powerup classes

@@ -29,12 +29,12 @@ class Gigachad(Character):
         self.attack_animation_duration = 200
         self.attack_start_time = 0
         
-        # Load character sprites (use different sprite set)
+        # Load character sprites
         self.player_images = {
-            'down': [pygame.image.load(f'./assets/images/Gigachad/down/{i}.png') for i in range(4)],
-            'up': [pygame.image.load(f'./assets/images/Gigachad/up/{i}.png') for i in range(4)],
-            'left': [pygame.image.load(f'./assets/images/Gigachad/left/{i}.png') for i in range(4)],
-            'right': [pygame.image.load(f'./assets/images/Gigachad/right/{i}.png') for i in range(4)],
+            'down': [pygame.image.load(f'./assets/images/player/down/{i}.png') for i in range(4)],
+            'up': [pygame.image.load(f'./assets/images/player/up/{i}.png') for i in range(4)],
+            'left': [pygame.image.load(f'./assets/images/player/left/{i}.png') for i in range(4)],
+            'right': [pygame.image.load(f'./assets/images/player/right/{i}.png') for i in range(4)],
         }
         
         # Scale images

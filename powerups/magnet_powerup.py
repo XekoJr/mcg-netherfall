@@ -10,8 +10,8 @@ class MagnetPowerup(Powerup):
             name="XP Magnet",
             description="Attracts all XP on the map to you",
             icon_path="./assets/images/powerups/magnet.png",
-            duration=0,
-            is_instant=True
+            duration=5,
+            is_instant=False
         )
         self.pull_speed = 15  # Speed at which XP moves to player
     

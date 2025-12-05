@@ -19,13 +19,13 @@ class GameManager:
     
     # Testing configuration for fast gameplay
     if TESTING_MODE:
-        ROUND_DURATION = 10  # 10 seconds per round
-        WAVE_1_THRESHOLD = 0.45  # 45% of round (4.5 seconds)
-        WAVE_2_THRESHOLD = 0.10  # 10% of round (1 second)
-        BASE_SPAWN_INTERVAL = 60  # Faster spawning
+        ROUND_DURATION = 10
+        WAVE_1_THRESHOLD = 0.45
+        WAVE_2_THRESHOLD = 0.10
+        BASE_SPAWN_INTERVAL = 60
         MIN_SPAWN_INTERVAL = 20
-        XP_TO_LEVEL = 25  # Less XP needed
-        XP_SCALING = 2.10  # 110% scaling
+        XP_TO_LEVEL = 25
+        XP_SCALING = 2.00 
         SHOW_DEBUG_INFO = True
     else:
         # Balanced gameplay settings
