@@ -1,7 +1,7 @@
 """
 Game manager classes.
 
-Handles enemy spawning, game loop, sound, and music management.
+Handles enemy spawning, game loop, sound, music management, powerup and save management.
 """
 
 from .enemy_manager import EnemyManager

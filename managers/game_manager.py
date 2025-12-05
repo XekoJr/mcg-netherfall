@@ -13,7 +13,7 @@ from tiles import TileManager
 class GameManager:
     # ===== CONFIGURATION SETTINGS =====
     # Set TESTING_MODE to switch between testing and production
-    TESTING_MODE = False  # Change to True for testing
+    TESTING_MODE = True  # Change to True for testing
     
     # Performance settings
     TARGET_FPS = 60

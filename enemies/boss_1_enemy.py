@@ -10,12 +10,9 @@ class Boss1Enemy(Enemy):
         images = [
             pygame.image.load(f'./assets/images/enemies/boss_1/{i}.png') for i in range(26)
         ]
-        super().__init__(x, y, hp=500, speed=1, xp_value=30, damage=40, size=(150, 150), images=images, tile_manager=tile_manager)
-        self.shoot_interval = 2200  # Default interval between shots
-        self.default_shoot_interval = 2200  # Save default interval for resetting
-        self.first_shot_delay = 1500
-        self.spawn_time = pygame.time.get_ticks()
-        self.last_shot_time = pygame.time.get_ticks() + self.first_shot_delay
+        super().__init__(x, y, hp=1000, speed=1, xp_value=30, damage=40, size=(150, 150), images=images, tile_manager=tile_manager)
+        self.shoot_frame = 19  # Shoot when animation reaches this frame
+        self.has_shot_this_cycle = False  # Track if we've already shot on this frame
         self.shots_fired = 0  # Tracks how many shots have been fired in total
 
         self.burn_damage = 5  # Damage per tick
@@ -23,11 +20,10 @@ class Boss1Enemy(Enemy):
         self.burn_tick_interval = 0.5  # Damage every x seconds
 
     def shoot_at_player(self, player):
-        """Shoot a projectile towards a random location near the player's position."""
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_shot_time >= self.shoot_interval:
-
-            # Define the random zone around the player
+        """Check if animation is on shooting frame and fire if so."""
+        # Shoot when animation reaches frame 19, but only once per cycle
+        if self.current_image_index == self.shoot_frame and not self.has_shot_this_cycle:
+            # Random zone around the player
             offset_range = 75
             random_offset_x = random.uniform(-offset_range, offset_range)
             random_offset_y = random.uniform(-offset_range, offset_range)
@@ -61,15 +57,10 @@ class Boss1Enemy(Enemy):
                 'angle': angle
             })
 
-            # Update the time of the last shot
-            self.last_shot_time = current_time
-            self.shots_fired += 1  # Increment the shot counter
-
-            # Adjust the shooting interval every 5 shots
-            if self.shots_fired % 5 == 0:
-                self.shoot_interval = max(500, self.shoot_interval - 35)  # Reduce interval but not below 500ms
-
-            # Reset the shooting interval after 5 cycles of reduced intervals
-            if self.shots_fired % 6 == 0:  # After 25 shots (5 intervals of 5 shots)
-                self.shoot_interval = self.default_shoot_interval
-                self.shots_fired = 0
+            # Mark that we've shot on this frame
+            self.has_shot_this_cycle = True
+            self.shots_fired += 1
+        
+        # Reset the shot flag when we move past the shooting frame
+        elif self.current_image_index != self.shoot_frame:
+            self.has_shot_this_cycle = False

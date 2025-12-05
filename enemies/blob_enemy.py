@@ -4,7 +4,7 @@ import pygame
 class BlobEnemy(Enemy):
     """Slow but high-health tank enemy."""
     def __init__(self, x, y, tile_manager=None):
-        # Load images specific to TankEnemy
+        # Load images
         images = [
             pygame.image.load(f'./assets/images/enemies/blob/{i}.png') for i in range(4)
         ]

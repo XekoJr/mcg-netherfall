@@ -4,7 +4,7 @@ import pygame
 class BatEnemy(Enemy):
     """Basic flying bat enemy."""
     def __init__(self, x, y, tile_manager=None):
-        # Load images specific to BatEnemy
+        # Load images
         images = [
             pygame.image.load(f'./assets/images/enemies/bat/{i}.png') for i in range(4)
         ]
