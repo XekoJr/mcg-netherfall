@@ -243,13 +243,6 @@ class Menu:
             else:
                 self.screen.fill(BLACK)
             
-            # Display high score in top-left
-            if self.high_score > 0:
-                high_score_text = self.font_score.render(
-                    self.t('main_menu.high_score', score=self.high_score), True, WHITE
-                )
-                self.screen.blit(high_score_text, (20, 20))
-            
             # Update and draw center buttons
             play_button.update(mouse_pos)
             skill_button.update(mouse_pos)
@@ -282,11 +275,14 @@ class Menu:
                 scoreboard_y + 20
             ))
             
-            coming_soon_text = self.font_credit.render(self.t('main_menu.coming_soon'), True, GRAY)
-            self.screen.blit(coming_soon_text, (
-                scoreboard_x + (scoreboard_width - coming_soon_text.get_width()) // 2,
-                scoreboard_y + scoreboard_height // 2
-            ))
+            if self.high_score > 0:
+                high_score_text = self.font_score.render(
+                    self.t('main_menu.me', score=self.high_score), True, WHITE
+                )
+                self.screen.blit(high_score_text, (
+                    scoreboard_x + (scoreboard_width - high_score_text.get_width()) // 2,
+                    scoreboard_y + 70
+                ))
             
             # Handle user input
             for event in pygame.event.get():

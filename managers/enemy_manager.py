@@ -30,7 +30,8 @@ class EnemyManager:
 
     # Handle damage and collision logic
     def handle_projectile_collisions(self, projectiles, player, xp_drops, achievements, save_settings):
-        """Check for collisions between projectiles and enemies."""
+        """Check for collisions between projectiles and enemies. Returns list of defeated enemies."""
+        defeated_enemies = []
         for projectile in projectiles[:]:
             projectile_rect = pygame.Rect(projectile['x'], projectile['y'], 10, 10)
 
@@ -53,12 +54,14 @@ class EnemyManager:
 
                     # Check if the enemy is dead
                     if enemy.take_damage(projectile['damage']):
+                        defeated_enemies.append(enemy)
                         # Pass `save_settings` to `handle_enemy_defeat`
                         self.handle_enemy_defeat(enemy, player, xp_drops, achievements, save_settings)
                     
                     # Remove the projectile after collision
                     projectiles.remove(projectile)
                     break
+        return defeated_enemies
 
     def handle_player_collisions(self, player):
         """Check for collisions between the player and enemies."""
@@ -97,7 +100,6 @@ class EnemyManager:
         """Handle the logic when an enemy is defeated."""
         # Handle boss defeat logic
         if isinstance(enemy, Boss1Enemy):
-            player.score += 100
             boss_death_sound.play()
             boss_music.stop()
             game_music.play(-1)
@@ -111,7 +113,6 @@ class EnemyManager:
                 save_settings(achievements=achievements)
 
         elif isinstance(enemy, Boss2Enemy):
-            player.score += 200
             boss_death_sound.play()
             boss_music.stop()
             game_music.play(-1)
@@ -126,13 +127,10 @@ class EnemyManager:
 
         # Handle other enemy-specific logic
         elif isinstance(enemy, BlobEnemy):
-            player.score += 15
             blob_death_sound.play()
         elif isinstance(enemy, SkeletonEnemy):
-            player.score += 10
             skeleton_death_sound.play()
         elif isinstance(enemy, BatEnemy):
-            player.score += 5
             bat_death_sound.play()
 
         # Remove the enemy and drop XP

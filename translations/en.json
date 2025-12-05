@@ -11,7 +11,7 @@
         "title": "Map"
     },
     "main_menu": {
-        "high_score": "High Score: {score}",
+        "me": "Me {score}",
         "play": "Play",
         "skill_tree": "Skill Tree",
         "store": "Store",

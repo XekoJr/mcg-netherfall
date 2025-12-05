@@ -11,7 +11,7 @@
         "title": "Mapa"
     },
     "main_menu": {
-        "high_score": "Récord: {score}",
+        "me": "Yo {score}",
         "play": "Jugar",
         "skill_tree": "Árbol de Habilidades",
         "store": "Tienda",

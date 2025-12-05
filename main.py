@@ -13,7 +13,7 @@ pygame.mixer.init()
 initialize_fonts()
 pygame.display.set_caption("MCG Netherfall")
 
-# Initialize save manager and display
+# Save manager and display
 save_manager = SaveManager(save_file="save/save.dat")
 screen = Menu.initialize_display(save_manager)
 
@@ -45,7 +45,7 @@ def reset_game(achievements=None, character_type="ranger", tile_manager=None):
         'health': Fonts.health
     }
     
-    # Create character based on type
+    # Initialize player based on character type
     if character_type == "gigachad":
         current_player = Gigachad(fonts=fonts, tile_manager=tile_manager)
     else:  # Default to ranger

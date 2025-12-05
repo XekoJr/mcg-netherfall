@@ -12,7 +12,7 @@ from tiles import TileManager
 
 class GameManager:
     # Configuration settings
-    TESTING_MODE = True  # Change to True for testing
+    TESTING_MODE = False  # Change to True for testing
     
     # Performance settings
     TARGET_FPS = 60
@@ -398,8 +398,13 @@ class GameManager:
 
         if player.health <= 0:
             death_sound.play()
+            final_score = player.score
+            # Update high score if needed
+            if final_score > self.menu.settings.get("high_score", 0):
+                self.menu.settings["high_score"] = final_score
+                self.menu.save_settings()
             new_player, new_enemy_manager, achievements = reset_game(achievements=achievements)
-            self.menu.game_over_screen(player.score, achievements)
+            self.menu.game_over_screen(final_score, achievements)
             return True
 
         if projectile in boss_projectiles:
@@ -411,8 +416,13 @@ class GameManager:
         """Check if player has died and handle game over if so"""
         if player.health <= 0:
             death_sound.play()
+            final_score = player.score
+            # Update high score if needed
+            if final_score > self.menu.settings.get("high_score", 0):
+                self.menu.settings["high_score"] = final_score
+                self.menu.save_settings()
             new_player, new_enemy_manager, achievements = reset_game(achievements=achievements)
-            self.menu.game_over_screen(player.score, achievements)
+            self.menu.game_over_screen(final_score, achievements)
             return True
         return False
 
@@ -435,7 +445,7 @@ class GameManager:
         self.hud.draw_all(screen, player)
         
         # Draw timer and score at top-left
-        self.draw_timer_and_score(screen)
+        self.draw_timer_and_score(screen, player)
         
         # Draw active powerup UI
         self.powerup_manager.draw_active_powerups_ui(screen)
@@ -446,7 +456,7 @@ class GameManager:
             draw_debug_hitboxes(screen, player, enemy_manager.enemies, 
                               projectiles, boss_projectiles, camera_x, camera_y)
 
-    def draw_timer_and_score(self, screen):
+    def draw_timer_and_score(self, screen, player):
         """Draw the countdown timer and score at top-left."""
         remaining = self.get_remaining_time()
         time_str = self.format_time(remaining)
@@ -466,9 +476,8 @@ class GameManager:
         timer_text = font.render(f"Round {self.current_round} - {time_str}{mode_indicator}", True, color)
         screen.blit(timer_text, (20, 20))
         
-        # Score text (kills with multiplier)
-        multiplier_text = f" x{self.time_multiplier:.1f}" if self.time_multiplier > 1.0 else ""
-        score_text = font.render(f"Kills: {self.kills}{multiplier_text}", True, WHITE)
+        # Score text
+        score_text = font.render(f"{player.score}", True, WHITE)
         screen.blit(score_text, (20, 50))
         
         # Debug info (only in testing mode)
@@ -596,7 +605,14 @@ class GameManager:
             # Update powerups
             self.powerup_manager.update(player, enemy_manager.enemies, xp_drops)
 
-            enemy_manager.handle_projectile_collisions(projectiles, player, xp_drops, achievements, self.menu.save_settings)
+            # Handle projectile collisions and get defeated enemies
+            defeated_enemies = enemy_manager.handle_projectile_collisions(projectiles, player, xp_drops, achievements, self.menu.save_settings)
+            for enemy in defeated_enemies:
+                score_gained = self.handle_enemy_defeat_score(enemy)
+                player.score += score_gained
+                self.kills += 1
+            
+            # Check for any other dead enemies
             for enemy in enemy_manager.enemies[:]:
                 if enemy.is_dead():
                     score_gained = self.handle_enemy_defeat_score(enemy)
