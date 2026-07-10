@@ -2,12 +2,6 @@
 
 A 2D top-down roguelike survival game built with Python and Pygame — survive endless waves of enemies, level up abilities, and take down bosses across increasingly chaotic runs.
 
-## Trailer
-
-<video src="https://github.com/XekoJr/mcg-netherfall/raw/main/NetherfallTrailerAndrePacheco-compressed.mp4" controls width="720">
-  Your browser doesn't support embedded video — <a href="https://github.com/XekoJr/mcg-netherfall/raw/main/NetherfallTrailerAndrePacheco-compressed.mp4">watch/download the trailer directly</a>.
-</video>
-
 ## Features
 
 - **2 playable characters** (Ranger, Gigachad), each with their own stats and ability set
