@@ -1,5 +1,6 @@
 """Utility functions and reusable UI components for the game."""
 
+import asyncio
 import pygame
 import math
 import time
@@ -266,7 +267,7 @@ class Slider:
         return int(self.current_val)
 
 
-def show_loading_screen(screen, image_path=None, duration=1.5):
+async def show_loading_screen(screen, image_path=None, duration=1.5):
     """Show a loading screen with spinning animation."""
     bg_color = (5, 7, 6)
     
@@ -317,4 +318,5 @@ def show_loading_screen(screen, image_path=None, duration=1.5):
                 sys.exit()
         
         pygame.display.flip()
+        await asyncio.sleep(0)
         clock.tick(60)

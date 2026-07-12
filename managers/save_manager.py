@@ -1,7 +1,11 @@
 import json
 import base64
 import os
-from cryptography.fernet import Fernet
+
+try:
+    from cryptography.fernet import Fernet
+except ImportError:
+    Fernet = None
 
 class SaveManager:
     """Manages game saves with encryption."""
@@ -13,8 +17,11 @@ class SaveManager:
             os.makedirs(self.save_dir)
         
         self.save_file = save_file
-        self.key = self._get_or_create_key()
-        self.cipher = Fernet(self.key)
+        if Fernet is not None:
+            self.key = self._get_or_create_key()
+            self.cipher = Fernet(self.key)
+        else:
+            self.cipher = None
         
         # Default settings structure
         self.default_settings = {
@@ -151,8 +158,11 @@ class SaveManager:
             with open(self.save_file, "rb") as f:
                 encrypted_data = f.read()
             
-            # Decrypt
-            decrypted_data = self.cipher.decrypt(encrypted_data)
+            # Decrypt (ou JSON simples quando não há cryptography)
+            if self.cipher is not None:
+                decrypted_data = self.cipher.decrypt(encrypted_data)
+            else:
+                decrypted_data = encrypted_data
             data = json.loads(decrypted_data.decode())
             
             # Merge with defaults to ensure all keys exist
@@ -169,8 +179,11 @@ class SaveManager:
             # Convert to JSON
             json_data = json.dumps(data, indent=4)
             
-            # Encrypt
-            encrypted_data = self.cipher.encrypt(json_data.encode())
+            # Encrypt (ou JSON simples quando não há cryptography)
+            if self.cipher is not None:
+                encrypted_data = self.cipher.encrypt(json_data.encode())
+            else:
+                encrypted_data = json_data.encode()
             
             # Write to file
             with open(self.save_file, "wb") as f:

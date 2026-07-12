@@ -1,3 +1,4 @@
+import asyncio
 import pygame
 import sys
 from assets import *
@@ -16,12 +17,6 @@ pygame.display.set_caption("MCG Netherfall")
 # Save manager and display
 save_manager = SaveManager(save_file="save/save.dat")
 screen = Menu.initialize_display(save_manager)
-
-show_loading_screen(
-    screen,
-    image_path='assets/images/background/background-production-loading.png',
-    duration=1.5
-)
 
 menu = Menu(screen, Fonts.title, Fonts.button, Fonts.credit, Fonts.score)
 
@@ -67,12 +62,24 @@ game_manager = GameManager(screen, menu)
 menu.reset_game = reset_game
 menu.game_loop = game_manager.run_game_loop
 
-if __name__ == "__main__":
+async def main():
+    global current_player, current_enemy_manager
+
+    await show_loading_screen(
+        screen,
+        image_path='assets/images/background/background-production-loading.png',
+        duration=1.5
+    )
+
     # Set up the initial game state
     current_player, current_enemy_manager, achievements = reset_game()
-    
+
     # Start the game from the main menu
-    menu.main_menu(current_player, current_enemy_manager, achievements)
+    await menu.main_menu(current_player, current_enemy_manager, achievements)
 
     pygame.quit()
     sys.exit()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

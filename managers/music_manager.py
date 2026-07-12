@@ -2,8 +2,8 @@ import pygame
 
 class MusicManager:
     def __init__(self):
-        self.game_music = pygame.mixer.Sound('assets/audio/ingame-music.wav')
-        self.boss_music = pygame.mixer.Sound('assets/audio/boss-music.wav')
+        self.game_music = pygame.mixer.Sound('assets/audio/ingame-music.ogg')
+        self.boss_music = pygame.mixer.Sound('assets/audio/boss-music.ogg')
         self.game_music.set_volume(0.1)
         self.boss_music.set_volume(0.1)
 

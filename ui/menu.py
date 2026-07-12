@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import pygame
@@ -175,7 +176,7 @@ class Menu:
         self.settings["high_score"] = score
         self.save_manager.save(self.settings)
 
-    def main_menu(self, player, enemy_manager, achievements):
+    async def main_menu(self, player, enemy_manager, achievements):
         """Main menu with centered action buttons and utility buttons in bottom-left."""
         main_menu_music.play(-1)
         running = True
@@ -297,18 +298,18 @@ class Menu:
                         click_sound.play()
                         if self.reset_game and self.game_loop:
                             player, enemy_manager, achievements = self.reset_game(achievements)
-                            self.game_loop(player, enemy_manager, achievements)
+                            await self.game_loop(player, enemy_manager, achievements)
                         # Reload background after returning from game
                         self.menu_background = self.load_menu_background()
                         
                     elif skill_button.rect.collidepoint(mouse_pos):
                         click_sound.play()
-                        self.skill_tree_menu(player, achievements)
+                        await self.skill_tree_menu(player, achievements)
                         self.menu_background = self.load_menu_background()
                         
                     elif store_button.rect.collidepoint(mouse_pos):
                         click_sound.play()
-                        self.store_menu(player, achievements)
+                        await self.store_menu(player, achievements)
                     
                     # Utility buttons
                     elif quit_button.is_clicked(mouse_pos):
@@ -319,7 +320,7 @@ class Menu:
                     
                     elif settings_button.is_clicked(mouse_pos):
                         click_sound.play()
-                        self.settings_menu()
+                        await self.settings_menu()
                         # Reload background and recreate all UI elements for new resolution
                         self.menu_background = self.load_menu_background()
                         screen_width = self.screen.get_width()
@@ -362,7 +363,7 @@ class Menu:
                         
                     elif lang_button.is_clicked(mouse_pos):
                         click_sound.play()
-                        self.language_menu()
+                        await self.language_menu()
                         # Reload translations after language change
                         self._load_translations()
                         # Recreate buttons with new translations
@@ -374,8 +375,9 @@ class Menu:
                                              center_button_width, center_button_height, self.t('main_menu.store'), self.font_button)
             
             pygame.display.flip()
+            await asyncio.sleep(0)
 
-    def pause_menu(self, achievements):
+    async def pause_menu(self, achievements):
         """Pause menu shown during gameplay."""
         paused = True
         
@@ -428,10 +430,11 @@ class Menu:
                         return True  # Signal to return to main menu
             
             pygame.display.flip()
+            await asyncio.sleep(0)
         
         return False
 
-    def game_over_screen(self, score, achievements):
+    async def game_over_screen(self, score, achievements):
         """Display game over screen with score and options."""
         game_music.stop()
         boss_music.stop()
@@ -490,19 +493,20 @@ class Menu:
                         click_sound.play()
                         if self.reset_game and self.game_loop:
                             player, enemy_manager, achievements = self.reset_game(achievements)
-                            self.game_loop(player, enemy_manager, achievements)
+                            await self.game_loop(player, enemy_manager, achievements)
                         return
                         
                     elif menu_button.is_clicked(mouse_pos):
                         click_sound.play()
                         if self.reset_game:
                             player, enemy_manager, achievements = self.reset_game(achievements)
-                            self.main_menu(player, enemy_manager, achievements)
+                            await self.main_menu(player, enemy_manager, achievements)
                         return
             
             pygame.display.flip()
+            await asyncio.sleep(0)
 
-    def settings_menu(self):
+    async def settings_menu(self):
         """Settings menu for audio, display, and graphics configuration."""
         running = True
 
@@ -701,6 +705,7 @@ class Menu:
                             self._apply_display_mode(resolutions[current_resolution_index], display_modes[current_display_mode_index])
 
             pygame.display.flip()
+            await asyncio.sleep(0)
 
     def _apply_display_mode(self, resolution, mode):
         """Apply display resolution and mode changes."""
@@ -723,7 +728,7 @@ class Menu:
         
         pygame.display.flip()
 
-    def language_menu(self):
+    async def language_menu(self):
         """Language selection menu."""
         running = True
         
@@ -805,8 +810,9 @@ class Menu:
                             self._load_translations()
         
             pygame.display.flip()
+            await asyncio.sleep(0)
 
-    def level_up_menu(self, player, screen):
+    async def level_up_menu(self, player, screen):
         """Display level-up menu with three random upgrade options."""
         running = True
 
@@ -886,11 +892,12 @@ class Menu:
                             running = False
 
             pygame.display.flip()
+            await asyncio.sleep(0)
 
         # Prevent immediate firing after menu closes
         player.last_shot_time = pygame.time.get_ticks()
 
-    def skill_tree_menu(self, player, achievements):
+    async def skill_tree_menu(self, player, achievements):
         """Skill tree menu for upgrading character skills."""
         running = True
         selected_skill = None
@@ -1162,8 +1169,9 @@ class Menu:
                             skill_failed_sound.play()
 
             pygame.display.flip()
+            await asyncio.sleep(0)
 
-    def store_menu(self, player, achievements):
+    async def store_menu(self, player, achievements):
         """Store menu for purchasing powerups."""
         running = True
         selected_powerup = None
@@ -1430,3 +1438,4 @@ class Menu:
                             skill_failed_sound.play()
 
             pygame.display.flip()
+            await asyncio.sleep(0)

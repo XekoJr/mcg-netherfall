@@ -152,41 +152,41 @@ boss_spawn_sound = None
 
 try:
     # Music
-    main_menu_music = pygame.mixer.Sound('assets/audio/main-menu-music.wav') 
-    game_music = pygame.mixer.Sound('assets/audio/ingame-music.wav')         
-    boss_music = pygame.mixer.Sound('assets/audio/boss-music.wav')
-    skill_music = pygame.mixer.Sound('assets/audio/skill-music.mp3')           
+    main_menu_music = pygame.mixer.Sound('assets/audio/main-menu-music.ogg') 
+    game_music = pygame.mixer.Sound('assets/audio/ingame-music.ogg')         
+    boss_music = pygame.mixer.Sound('assets/audio/boss-music.ogg')
+    skill_music = pygame.mixer.Sound('assets/audio/skill-music.ogg')           
 
     # Menu Interaction
-    hover_sound = pygame.mixer.Sound('assets/audio/menu-hover.wav')          
-    click_sound = pygame.mixer.Sound('assets/audio/menu-click.wav')          
+    hover_sound = pygame.mixer.Sound('assets/audio/menu-hover.ogg')          
+    click_sound = pygame.mixer.Sound('assets/audio/menu-click.ogg')          
 
     # Sound effects
     # Projectile sounds
-    normal_hit_sound = pygame.mixer.Sound('assets/audio/normal-hit.wav')    
-    crit_hit_sound = pygame.mixer.Sound('assets/audio/crit-hit.wav')      
-    block_hit_sound = pygame.mixer.Sound('assets/audio/block_hit.mp3')  
+    normal_hit_sound = pygame.mixer.Sound('assets/audio/normal-hit.ogg')    
+    crit_hit_sound = pygame.mixer.Sound('assets/audio/crit-hit.ogg')      
+    block_hit_sound = pygame.mixer.Sound('assets/audio/block_hit.ogg')  
 
     # xp and level up sounds
-    collect_xp_sound = pygame.mixer.Sound('assets/audio/xp-collect.wav')    
-    level_up_sound = pygame.mixer.Sound('assets/audio/level-up.wav')   
-    skill_bought_sound = pygame.mixer.Sound('assets/audio/skill-bought.mp3')
-    skill_failed_sound = pygame.mixer.Sound('assets/audio/skill-failed.mp3') 
+    collect_xp_sound = pygame.mixer.Sound('assets/audio/xp-collect.ogg')    
+    level_up_sound = pygame.mixer.Sound('assets/audio/level-up.ogg')   
+    skill_bought_sound = pygame.mixer.Sound('assets/audio/skill-bought.ogg')
+    skill_failed_sound = pygame.mixer.Sound('assets/audio/skill-failed.ogg') 
 
     # Player sounds
-    hurt_sound = pygame.mixer.Sound('assets/audio/hurt.wav')               
-    death_sound = pygame.mixer.Sound('assets/audio/death/player-death.wav')
+    hurt_sound = pygame.mixer.Sound('assets/audio/hurt.ogg')               
+    death_sound = pygame.mixer.Sound('assets/audio/death/player-death.ogg')
         
     # Ability sounds
-    ability_obtained_sound = pygame.mixer.Sound('assets/audio/ability-obtained.wav')
-    ability_used_sound = pygame.mixer.Sound('assets/audio/ability-used.wav')         
+    ability_obtained_sound = pygame.mixer.Sound('assets/audio/ability-obtained.ogg')
+    ability_used_sound = pygame.mixer.Sound('assets/audio/ability-used.ogg')         
 
     # Enemy sounds
-    bat_death_sound = pygame.mixer.Sound('assets/audio/death/bat-death.wav')
-    skeleton_death_sound = pygame.mixer.Sound('assets/audio/death/skeleton-death.wav')
-    blob_death_sound = pygame.mixer.Sound('assets/audio/death/blob-death.wav')
-    boss_death_sound = pygame.mixer.Sound('assets/audio/death/boss-death.wav')
-    boss_spawn_sound = pygame.mixer.Sound('assets/audio/boss-spawn.wav')
+    bat_death_sound = pygame.mixer.Sound('assets/audio/death/bat-death.ogg')
+    skeleton_death_sound = pygame.mixer.Sound('assets/audio/death/skeleton-death.ogg')
+    blob_death_sound = pygame.mixer.Sound('assets/audio/death/blob-death.ogg')
+    boss_death_sound = pygame.mixer.Sound('assets/audio/death/boss-death.ogg')
+    boss_spawn_sound = pygame.mixer.Sound('assets/audio/boss-spawn.ogg')
 
 except pygame.error as e:
     print(f"Error loading sounds: {e}")

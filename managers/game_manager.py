@@ -1,3 +1,4 @@
+import asyncio
 import pygame
 import sys
 from assets import *
@@ -242,7 +243,7 @@ class GameManager:
             return True
         return False
 
-    def handle_events(self, player, enemy_manager, achievements):
+    async def handle_events(self, player, enemy_manager, achievements):
         """Handle pygame events including user input"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -250,7 +251,7 @@ class GameManager:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if self.menu.pause_menu(achievements):
+                    if await self.menu.pause_menu(achievements):
                         return True
                 if event.key == pygame.K_F3:
                     self.hud.toggle_debug()
@@ -352,7 +353,7 @@ class GameManager:
                 elif isinstance(ability, PoisonAbility):
                     ability.update_poison(enemy)
 
-    def handle_boss_projectiles(self, player, achievements, reset_game):
+    async def handle_boss_projectiles(self, player, achievements, reset_game):
         """Handle boss projectiles movement and collision with player"""
         for projectile in boss_projectiles[:]:
             projectile['x'] += projectile['dx'] * projectile['speed']
@@ -367,7 +368,7 @@ class GameManager:
             player_rect = pygame.Rect(player.x, player.y, player.size, player.size)
 
             if player_rect.colliderect(projectile_rect):
-                if self._handle_projectile_collision(player, projectile, achievements, reset_game):
+                if await self._handle_projectile_collision(player, projectile, achievements, reset_game):
                     return True
 
             if (projectile['x'] < 0 or projectile['x'] > MAP_WIDTH or
@@ -377,7 +378,7 @@ class GameManager:
         
         return False
 
-    def _handle_projectile_collision(self, player, projectile, achievements, reset_game):
+    async def _handle_projectile_collision(self, player, projectile, achievements, reset_game):
         """Handle a single projectile collision with the player"""
         for ability in player.abilities:
             if isinstance(ability, ShieldAbility) and ability.block():
@@ -404,7 +405,7 @@ class GameManager:
                 self.menu.settings["high_score"] = final_score
                 self.menu.save_settings()
             new_player, new_enemy_manager, achievements = reset_game(achievements=achievements)
-            self.menu.game_over_screen(final_score, achievements)
+            await self.menu.game_over_screen(final_score, achievements)
             return True
 
         if projectile in boss_projectiles:
@@ -412,7 +413,7 @@ class GameManager:
         
         return False
 
-    def check_player_death(self, player, reset_game, achievements):
+    async def check_player_death(self, player, reset_game, achievements):
         """Check if player has died and handle game over if so"""
         if player.health <= 0:
             death_sound.play()
@@ -422,7 +423,7 @@ class GameManager:
                 self.menu.settings["high_score"] = final_score
                 self.menu.save_settings()
             new_player, new_enemy_manager, achievements = reset_game(achievements=achievements)
-            self.menu.game_over_screen(final_score, achievements)
+            await self.menu.game_over_screen(final_score, achievements)
             return True
         return False
 
@@ -525,7 +526,7 @@ class GameManager:
         
         return self.calculate_score(base_score)
 
-    def run_game_loop(self, player, enemy_manager, achievements):
+    async def run_game_loop(self, player, enemy_manager, achievements):
         """Main game loop."""
         self.frame_count = 0
         self.achievements = achievements
@@ -557,7 +558,7 @@ class GameManager:
             
             camera_x, camera_y = self.get_camera_offset(player)
 
-            return_to_menu = self.handle_events(player, enemy_manager, achievements)
+            return_to_menu = await self.handle_events(player, enemy_manager, achievements)
             if return_to_menu:
                 game_music.stop()
                 boss_music.stop()
@@ -599,7 +600,7 @@ class GameManager:
                 if isinstance(enemy, Boss1Enemy):
                     enemy.shoot_at_player(player)
 
-            if self.handle_boss_projectiles(player, achievements, self.menu.reset_game):
+            if await self.handle_boss_projectiles(player, achievements, self.menu.reset_game):
                 return
 
             # Update powerups
@@ -626,11 +627,11 @@ class GameManager:
                 pass
 
             if enemy_manager.handle_player_collisions(player):
-                if self.check_player_death(player, self.menu.reset_game, achievements):
+                if await self.check_player_death(player, self.menu.reset_game, achievements):
                     return
 
             player.update_status_effects()
-            if self.check_player_death(player, self.menu.reset_game, achievements):
+            if await self.check_player_death(player, self.menu.reset_game, achievements):
                 return
                 
             player.update_abilities_effects()
@@ -638,11 +639,13 @@ class GameManager:
             self.draw_game(self.screen, player, camera_x, camera_y, enemy_manager)
 
             if player.level_up_pending:
-                self.menu.level_up_menu(player, self.screen)
+                await self.menu.level_up_menu(player, self.screen)
                 player.level_up_pending = False
+                await asyncio.sleep(0)
                 continue
 
             pygame.display.flip()
+            await asyncio.sleep(0)
 
     def get_camera_offset(self, player):
         """Calculate camera offset based on player position"""
